@@ -1,6 +1,7 @@
 package org.lab41.dendrite.generators.models.kronecker.mapreduce.lib.input;
 
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
@@ -14,22 +15,34 @@ import java.io.IOException;
  *
  * @author kramachandran
  */
-public class LongSequenceRecordReader extends RecordReader<LongWritable, LongWritable>{
+public class LongSequenceRecordReader extends RecordReader<LongWritable, NullWritable>{
 
-    public long startInterval;
-    public long endInterval;
-    public long currentKey;
-    public long currentValue;
+    private long startInterval;
+    private long endInterval;
+    private long currentKey;
+
+    private LongSequenceGenerator generator;
 
 
-    public void initalize(LongSequenceInputSplit split, TaskAttemptContext context)
+    public LongSequenceRecordReader(LongSequenceGenerator generator) {
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+public void initalize(LongSequenceInputSplit split, TaskAttemptContext context)
     {
         startInterval = split.getStartInterval();
         startInterval = split.getEndInterval();
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        initalize((LongSequenceInputSplit) split, context);
     }
 
     /**
@@ -42,24 +55,40 @@ public class LongSequenceRecordReader extends RecordReader<LongWritable, LongWri
      */
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
-        return true;  //To change body of implemented methods use File | Settings | File Templates.
+        return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LongWritable getCurrentKey() throws IOException, InterruptedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        LongWritable retVal =new LongWritable(generator.generate(currentKey));
+        currentKey +=1;
+        return retVal;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public LongWritable getCurrentValue() throws IOException, InterruptedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public NullWritable getCurrentValue() throws IOException, InterruptedException {
+        return NullWritable.get();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public float getProgress() throws IOException, InterruptedException {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        //Does that +1 makes sense? Or will it all wash out for very large n?
+        //probably washes out
+        return (currentKey-startInterval) / (endInterval - startInterval +1);  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() throws IOException {
         //To change body of implemented methods use File | Settings | File Templates.

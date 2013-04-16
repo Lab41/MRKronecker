@@ -1,25 +1,64 @@
 package org.lab41.dendrite.generators.models.kronecker.mapreduce.lib.input;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This input format will emit a sequence of LongWriables values as Keys, and null writables as values.
+ * <p/>
+ * This input format is intiatlized with a start value, an end value, and a genertor functor.
+ * The generator function is called for every long For evey long in the closed interval [start,end]
+ * and the return value of that generator function is emited as key.
+ * <p/>
+ * By default this function will evenly divide the range [start,end] between the number of mappers set in
+ * the JobConf using {@link MRJobConfig.NUM_MAPS}.  If this value is not set then we default to 1.
+ *
  * @author kramachandran
  */
-public class LongSequenceInputFormat implements InputFormat<LongWritable, LongWritable> {
+public class LongSequenceInputFormat extends InputFormat<LongWritable, NullWritable> {
+    Configuration conf;
+    Long startSequence;
+    Long endSequence;
+    LongSequenceGenerator generator;
+    Logger log = LoggerFactory.getLogger(LongSequenceInputFormat.class);
 
-
+    /**
+     * {@inheritDoc}
+     */
 
     @Override
     public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        log.info("Interval : " + startSequence + "," + endSequence);
+
+        List<LongSequenceInputSplit> splits = new ArrayList<LongSequenceInputSplit>();
+        Integer chunks = context.getConfiguration().getInt(MRJobConfig.NUM_MAPS, 1);
+
+        //TODO: add error checking to make sure startSequence is less than endSequence
+        long chunksize = (endSequence - startSequence + 1) / chunks;
+
+        for (long i = startSequence; i < endSequence; i += chunksize) {
+
+            long startInterval = i;
+            long endInterval = i + chunksize - 1;
+
+            long.info("adding a split for :" + i + "," + endInterval);
+            LongSequenceInputSplit split = new LongSequenceInputSplit(startInterval, endInterval);
+        }
+
+
     }
 
     @Override
     public RecordReader createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        LongSequenceRecordReader recordReader = new LongSequenceRecordReader(generator);
+
     }
 }
