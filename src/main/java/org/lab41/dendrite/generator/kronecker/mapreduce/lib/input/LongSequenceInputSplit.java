@@ -1,4 +1,4 @@
-package org.lab41.dendrite.generators.models.kronecker.mapreduce.lib.input;
+package org.lab41.dendrite.generator.kronecker.mapreduce.lib.input;
 
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.InputSplit;

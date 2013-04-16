@@ -13,6 +13,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hadoop.core.version>2.0.0-mr1-cdh4.2.0</hadoop.core.version>
         <hadoop.version>2.0.0-cdh4.2.0</hadoop.version>
+        <tinkerpop.version>2.3.0</tinkerpop.version>
+        <titan.version>0.3.0</titan.version>
+        <faunus.version>0.1.1</faunus.version>
     </properties>
 
     <licenses>
@@ -59,6 +62,19 @@
             <classifier>hadoop2</classifier>
             <scope>test</scope>
         </dependency>
+
+        <!-- Tinkerpop & Faunus Dependencies -->
+        <dependency>
+            <groupId>com.tinkerpop.blueprints</groupId>
+            <artifactId>blueprints-core</artifactId>
+            <version>${tinkerpop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thinkaurelius.faunus</groupId>
+            <artifactId>faunus</artifactId>
+            <version>${faunus.version}</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>

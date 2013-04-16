@@ -1,4 +1,4 @@
-package org.lab41.dendrite.generators.models.kronecker.mapreduce.lib.input;
+package org.lab41.dendrite.generator.kronecker.mapreduce.lib.input;
 
 /**
  * This is the identity sequence generator. It simply returns the input.

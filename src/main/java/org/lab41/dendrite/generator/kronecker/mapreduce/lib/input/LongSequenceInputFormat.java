@@ -1,6 +1,5 @@
-package org.lab41.dendrite.generators.models.kronecker.mapreduce.lib.input;
+package org.lab41.dendrite.generator.kronecker.mapreduce.lib.input;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.*;
@@ -24,11 +23,16 @@ import java.util.List;
  * @author kramachandran
  */
 public class LongSequenceInputFormat extends InputFormat<LongWritable, NullWritable> {
-    Configuration conf;
     Long startSequence;
     Long endSequence;
     LongSequenceGenerator generator;
     Logger log = LoggerFactory.getLogger(LongSequenceInputFormat.class);
+
+    public LongSequenceInputFormat(Long startSequence, Long endSequence, LongSequenceGenerator generator) {
+        this.startSequence = startSequence;
+        this.endSequence = endSequence;
+        this.generator = generator;
+    }
 
     /**
      * {@inheritDoc}
@@ -59,6 +63,7 @@ public class LongSequenceInputFormat extends InputFormat<LongWritable, NullWrita
     @Override
     public RecordReader createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
         LongSequenceRecordReader recordReader = new LongSequenceRecordReader(generator);
+        return recordReader;
 
     }
 }
