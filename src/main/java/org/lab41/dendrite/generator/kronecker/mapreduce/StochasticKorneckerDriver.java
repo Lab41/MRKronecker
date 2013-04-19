@@ -35,9 +35,9 @@ import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.LongSequenceIn
  * @author kramachandran
  */
 public class StochasticKorneckerDriver extends Configured implements Tool {
-    private Path outputPath;
-    private String initiator;
-    private int n;
+    Path outputPath;
+    String initiator;
+    int n;
 
     public static void main(String[] args) throws Exception {
         int exitCode = ToolRunner.run(new StochasticKorneckerDriver(), args);
@@ -45,10 +45,10 @@ public class StochasticKorneckerDriver extends Configured implements Tool {
         System.exit(exitCode);
     }
 
-    protected void parseArgs(String[] args) {
+    protected boolean parseArgs(String[] args) {
         if (args.length != 6) {
-            System.out.print("Usage : StochasticKorneckerDriver outputPath n t_11 t_12 t_21 t_31");
-            System.exit(1);
+            return false;
+
         }
         else
         {
@@ -68,46 +68,54 @@ public class StochasticKorneckerDriver extends Configured implements Tool {
 
 
         }
+        return true;
 
     }
 
     @Override
     public int run(String[] args) throws Exception {
-        parseArgs(args);
+        if(parseArgs(args))
+        {
 
-        Configuration conf = getConf();
+            Configuration conf = getConf();
 
-        /** configure Job **/
-        Job job = new Job(getConf(), "DataIngest Example");
-        job.setJarByClass(StochasticKorneckerDriver.class);
+            /** configure Job **/
+            Job job = new Job(getConf(), "DataIngest Example");
+            job.setJarByClass(StochasticKorneckerDriver.class);
 
-        /** Set the Mapper & Reducer**/
-        job.setMapperClass(StochasticKorneckerGeneratorMapper.class);
-        job.setReducerClass(EdgeListToFaunusAnnotatingReducer.class);
+            /** Set the Mapper & Reducer**/
+            job.setMapperClass(StochasticKorneckerGeneratorMapper.class);
+            job.setReducerClass(EdgeListToFaunusAnnotatingReducer.class);
 
-        /** Configure Input Format to be our custom InputFormat **/
-        job.setInputFormatClass(LongSequenceInputFormat.class);
-        job.setOutputFormatClass(FileOutputFormat.class);
-        FileOutputFormat.setOutputPath(job, outputPath);
+            /** Configure Input Format to be our custom InputFormat **/
+            job.setInputFormatClass(LongSequenceInputFormat.class);
+            job.setOutputFormatClass(FileOutputFormat.class);
+            FileOutputFormat.setOutputPath(job, outputPath);
 
-        /** Configure Map Output **/
-        job.setMapOutputKeyClass(LongWritable.class);
-        job.setMapOutputValueClass(LongWritable.class);
+            /** Configure Map Output **/
+            job.setMapOutputKeyClass(LongWritable.class);
+            job.setMapOutputValueClass(LongWritable.class);
 
-        /** Configure job (Reducer) output **/
-        job.setOutputKeyClass(NullWritable.class);
-        job.setOutputValueClass(FaunusVertex.class);
+            /** Configure job (Reducer) output **/
+            job.setOutputKeyClass(NullWritable.class);
+            job.setOutputValueClass(FaunusVertex.class);
 
-        //Set the configuration
-        job.getConfiguration().set(Constants.PROBABLITY_MATRIX, initiator);
-        job.getConfiguration().set(Constants.N, Integer.toString(n));
-
-
-        if (job.waitForCompletion(true)) {
-            return 0;
-        } else {
+            //Set the configuration
+            job.getConfiguration().set(Constants.PROBABLITY_MATRIX, initiator);
+            job.getConfiguration().set(Constants.N, Integer.toString(n));
+            if (job.waitForCompletion(true)) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+        else
+        {
+            System.out.println("Usage : outputPath n t_11 t_12 t_21 t_31 ");
             return 1;
         }
+
+
     }
 }
 

@@ -42,7 +42,7 @@ public class LongSequenceInputFormat extends InputFormat<LongWritable, NullWrita
     public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
         log.info("Interval : " + startSequence + "," + endSequence);
 
-        List<LongSequenceInputSplit> splits = new ArrayList<LongSequenceInputSplit>();
+        List<InputSplit> splits = new ArrayList<InputSplit>();
         Integer chunks = context.getConfiguration().getInt(MRJobConfig.NUM_MAPS, 1);
 
         //TODO: add error checking to make sure startSequence is less than endSequence
@@ -53,11 +53,13 @@ public class LongSequenceInputFormat extends InputFormat<LongWritable, NullWrita
             long startInterval = i;
             long endInterval = i + chunksize - 1;
 
-            long.info("adding a split for :" + i + "," + endInterval);
+            log.info("adding a split for :" + i + "," + endInterval);
             LongSequenceInputSplit split = new LongSequenceInputSplit(startInterval, endInterval);
+            splits.add(split);
         }
 
 
+        return splits;
     }
 
     @Override

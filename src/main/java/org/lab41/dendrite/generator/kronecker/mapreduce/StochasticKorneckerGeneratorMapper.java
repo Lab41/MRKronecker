@@ -14,18 +14,19 @@ import java.io.IOException;
 
 /**
  * This mapper will generate a <u>directed</u> graph with no using self loops using Kornecker Multiplication.
- *  <p>
+ *  <p/>
  * More specifically, this mapper will generate all outgoing edges for given node, upon each invocation.
  * For example, if this mapper is invoked with <LongWritable(5), NullWritable> then the map function will generate
  * all edges emanating from that node (node id = 5). Each edge is emitted as a (Src, Dest) KV pair as  it is generated.
- *  <p>
+ *  <p/>
  * The  Kornecker Graph Generation algorithm is explained in :
  *
  *      Leskovec, Jurij, Deepayan Chakrabarti, Jon Kleinberg, and Christos Faloutsos.
  *      "Realistic, mathematically tractable graph generation and evolution, using kronecker multiplication."
  *      In Knowledge Discovery in Databases: PKDD 2005, pp. 133-145. Springer Berlin Heidelberg, 2005.
  *      (http://www-cs.stanford.edu/people/jure/pubs/kronecker-pkdd05.pdf)
- *
+ * <p/>
+ * As a quick note if edge ij exits that means the edge is directed from i to j.
  *
  * @author kramachandran
  */
@@ -69,7 +70,8 @@ public class StochasticKorneckerGeneratorMapper extends Mapper<LongWritable, Nul
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         configuration = context.getConfiguration();
-        n = Integer.getInteger(configuration.get(Constants.N));
+        String N = configuration.get(Constants.N) ;
+        n = Integer.parseInt(N);
         String strProbMatrix = configuration.get(Constants.PROBABLITY_MATRIX);
         probablity_matrix = parseProbabilityMartix(strProbMatrix)  ;
 
@@ -81,7 +83,10 @@ public class StochasticKorneckerGeneratorMapper extends Mapper<LongWritable, Nul
         long dimNodes;
 
         if (n < 64)
-         dimNodes= (2<<n) -1;       // 2 ^ n
+        {
+         dimNodes= (long) Math.pow(2,n);       // 2 ^ n
+         logger.info("DimNodes : " + dimNodes);
+        }
         else
          throw new RuntimeException("N is too large! Must be less than 64");
 
@@ -89,7 +94,7 @@ public class StochasticKorneckerGeneratorMapper extends Mapper<LongWritable, Nul
 
         //Note the loops are one based here. We are starting the adjacency matrix from an index of 1,1
 
-        for(int v = 0 ; v < dimNodes; v++)
+        for(int v = 1 ; v <= dimNodes; v++)
         {
             if( u != v)
             {
@@ -98,15 +103,16 @@ public class StochasticKorneckerGeneratorMapper extends Mapper<LongWritable, Nul
                 if(writeEdge == 1)
                 {
                     context.write(new LongWritable(u), new LongWritable(v));
-                    context.getCounter("Graph Stats", "EdgeCount").increment(1l);
+                    context.getCounter("Graph Stats", "EdgesWritten").increment(1l);
                     logger.info(String.format("Writing Edge: %1$d, %2$d", u, v ));
                 }
+                context.getCounter("Graph Stats", "Edges").increment(1l);
             }
         }
         context.getCounter("Completed", "Nodes").increment(1l);
     }
 
-    protected float calculateProbabilityOfEdgeUV(long u, int v) {
+    protected float calculateProbabilityOfEdgeUV(long u, long v) {
         float p_uv = 1; //probability
         for (int i = 0 ; i < n; i++)
         {
@@ -124,16 +130,14 @@ public class StochasticKorneckerGeneratorMapper extends Mapper<LongWritable, Nul
      * @param i - iteration step.
      * @return
      */
-    protected float getProbabilityForIteration(long u, int v, int i, float[][] probaility_matrix) {
-
-        //TODO: might want to precompute an array of 2^n
-        long n_to_i = (2<< i) - 1; // 2^n;
+    protected float getProbabilityForIteration(long u, long v, int i, float[][] probaility_matrix) {
+        long n_to_i = (long) Math.pow(2,i);
 
         //calculating which of the probabilities to use in this step of the product
         //by figuring out which of the entries in the initiator matrix should be used.
 
         int prob_row = (int) (Math.floor((u-1)/ n_to_i) % 2);
-        int prob_column = (int) (Math.floor((u-1)/n_to_i) % 2);
+        int prob_column = (int) (Math.floor((v-1)/n_to_i) % 2);
 
         logger.info(String.format("for (%1$d, %2$d) iteration %3$d using prob[%4$d, %5$d]",
                 u, v, i, prob_row, prob_column));
