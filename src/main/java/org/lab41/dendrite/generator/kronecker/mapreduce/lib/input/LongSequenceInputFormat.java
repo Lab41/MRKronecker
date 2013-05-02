@@ -50,25 +50,25 @@ public class LongSequenceInputFormat extends InputFormat<LongWritable, NullWrita
         log.info("Interval : " + startSequence + "," + endSequence);
 
         List<InputSplit> splits = new ArrayList<InputSplit>();
-        Integer chunks = context.getConfiguration().getInt(MRJobConfig.NUM_MAPS, 1);
+        Integer block_size = context.getConfiguration().getInt(Constants.BLOCK_SIZE, (int) Math.pow(2,14));
 
-        //TODO: add error checking to make sure startSequence is less than endSequence
-        if(chunks != 1 )
-        {
-         chunksize = (endSequence - startSequence + 1) / chunks;
-        }
-        else
-        {
-            //We'll do 64,000  nodes to a mapper -- if the mappers produce less that
-            //64M of data we probably have to up this.
-            chunksize =(long) Math.pow(2, 14);    //approx 16k
-        }
+//        //TODO: add error checking to make sure startSequence is less than endSequence
+//        if(chunks != 1 )
+//        {
+//         chunksize = (endSequence - startSequence + 1) / chunks;
+//        }
+//        else
+//        {
+//            //We'll do 64,000  nodes to a mapper -- if the mappers produce less that
+//            //64M of data we probably have to up this.
+//            chunksize =(long) Math.pow(2, 14);    //approx 16k
+//        }
 
         for (long i = startSequence; i < endSequence; i += chunksize) {
 
             long startInterval = i;
 
-            long endInterval = i + chunksize - 1;
+            long endInterval = i + block_size - 1;
 
             if(endInterval > endSequence)
                 endInterval = endSequence;

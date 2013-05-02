@@ -136,7 +136,7 @@ public class StochasticKroneckerGeneratorMapper extends Mapper<LongWritable, Nul
         if (n < 64)
         {
          dimNodes= (long) Math.pow(2,n);       // 2 ^ n
-        }
+            }
         else
          throw new RuntimeException("N is too large! Must be less than 64");
 

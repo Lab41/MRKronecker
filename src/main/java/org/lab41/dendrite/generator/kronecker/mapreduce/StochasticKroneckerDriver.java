@@ -120,6 +120,7 @@ public class StochasticKroneckerDriver extends Configured implements Tool {
             //Set the configuration
             job.getConfiguration().set(Constants.PROBABLITY_MATRIX, initiator);
             job.getConfiguration().set(Constants.N, Integer.toString(n));
+            job.getConfiguration().set(Constants.BLOCK_SIZE, Double.toString(Math.pow(2, 13)));
             if (job.waitForCompletion(true)) {
                 return 0;
             } else {
