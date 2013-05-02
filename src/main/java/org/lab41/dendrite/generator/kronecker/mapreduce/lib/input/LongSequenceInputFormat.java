@@ -52,19 +52,7 @@ public class LongSequenceInputFormat extends InputFormat<LongWritable, NullWrita
         List<InputSplit> splits = new ArrayList<InputSplit>();
         Integer block_size = context.getConfiguration().getInt(Constants.BLOCK_SIZE, (int) Math.pow(2,14));
 
-//        //TODO: add error checking to make sure startSequence is less than endSequence
-//        if(chunks != 1 )
-//        {
-//         chunksize = (endSequence - startSequence + 1) / chunks;
-//        }
-//        else
-//        {
-//            //We'll do 64,000  nodes to a mapper -- if the mappers produce less that
-//            //64M of data we probably have to up this.
-//            chunksize =(long) Math.pow(2, 14);    //approx 16k
-//        }
-
-        for (long i = startSequence; i < endSequence; i += chunksize) {
+        for (long i = startSequence; i < endSequence; i += block_size) {
 
             long startInterval = i;
 

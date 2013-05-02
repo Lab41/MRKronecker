@@ -8,5 +8,5 @@ public class Constants {
     public static String PROBABLITY_MATRIX = "kornecker.probablity_matrix";
 
     //the block size should be a power of 2- it controls how many nodes are sent to each mapper.
-    public static String BLOCK_SIZE = 'kronecker.block_size';
+    public static String BLOCK_SIZE = "kronecker.block_size";
 }
