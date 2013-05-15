@@ -44,7 +44,7 @@ public class StochasticKroneckerDriver extends BaseDriver implements Tool {
     public Job configureGeneratorJob(Configuration conf) throws IOException {
         /** configure Job **/
         Job job = new Job(getConf());
-        job.setJobName("StochasticKronecker");
+        job.setJobName("StochasticKronecker N = " + Integer.toString(n));
         job.setJarByClass(StochasticKroneckerDriver.class);
 
         /** Set the Mapper & Reducer**/
