@@ -51,7 +51,7 @@ public class FastStochasticKroneckerDriver extends BaseDriver implements Tool {
         //Set the configuration
         job.getConfiguration().set(Constants.PROBABLITY_MATRIX, initiator);
         job.getConfiguration().set(Constants.N, Integer.toString(n));
-        job.getConfiguration().set(Constants.BLOCK_SIZE, Long.toString((long) Math.pow(2, 16)));
+        job.getConfiguration().set(Constants.BLOCK_SIZE, Long.toString((long) Math.pow(2, 20)));
         return job;
     }
 
