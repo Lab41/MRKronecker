@@ -16,10 +16,6 @@ public abstract class BaseDriver extends Configured {
     String initiator;
     int n;
 
-
-
-
-
     protected boolean parseArgs(String[] args) {
 
         if (args.length != 6) {

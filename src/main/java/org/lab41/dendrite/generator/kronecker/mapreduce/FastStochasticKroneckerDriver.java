@@ -17,10 +17,14 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
+ * 
+ * Drives a fast MapReduce implementation of the KronGen algorithm.
+ * 
  * @author kramachandran
  */
 public class FastStochasticKroneckerDriver extends BaseDriver implements Tool {
     Logger logger = LoggerFactory.getLogger(StochasticKroneckerDriver.class);
+    
     @Override
     public Job configureGeneratorJob(Configuration conf) throws IOException {
         /** configure Job **/
@@ -33,7 +37,6 @@ public class FastStochasticKroneckerDriver extends BaseDriver implements Tool {
         job.setCombinerClass(FaunusVertexCombiner.class);
         job.setReducerClass(FaunusVertexAnnotatingReducer.class);
 
-
         /* Configure Input Format to be our custom InputFormat */
         job.setInputFormatClass(FastKroneckerInputFormat.class);
         job.setOutputFormatClass(SequenceFileOutputFormat.class);
@@ -44,7 +47,7 @@ public class FastStochasticKroneckerDriver extends BaseDriver implements Tool {
         job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(FaunusVertex.class);
 
-            /* Configure job (Reducer) output */
+        /* Configure job (Reducer) output */
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(FaunusVertex.class);
 
@@ -54,7 +57,6 @@ public class FastStochasticKroneckerDriver extends BaseDriver implements Tool {
         job.getConfiguration().set(Constants.BLOCK_SIZE, Long.toString((long) Math.pow(2, 20)));
         return job;
     }
-
 
     @Override
     public int run(String[] args) throws Exception {
@@ -78,7 +80,11 @@ public class FastStochasticKroneckerDriver extends BaseDriver implements Tool {
 
     }
 
-
+    /**
+     * Runs this tool using the provided command-line arguments
+     * @param args Command line arguments
+     * @throws Exception 
+     */
     public static void main(String[] args) throws Exception {
         int exitCode = ToolRunner.run(new FastStochasticKroneckerDriver(), args);
 

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * Combines faunus vertices which use the same id.
+ * Combines Faunus vertices which use the same id.
  * @author kramachandran
  */
 public class FaunusVertexAnnotatingReducer extends Reducer<LongWritable, FaunusVertex, NullWritable, FaunusVertex>{
@@ -31,10 +31,8 @@ public class FaunusVertexAnnotatingReducer extends Reducer<LongWritable, FaunusV
         for (int i = 0; i < 10; i++) {
             vertex.setProperty("randString" + Integer.toString(i), RandomStringUtils.randomAlphanumeric((int) Math.floor(Math.random() * 150)));
         }
-
-
-
-
+        
+        
     }
     @Override
     protected void reduce(LongWritable key, Iterable<FaunusVertex> values, Context context) throws IOException, InterruptedException {
@@ -46,7 +44,6 @@ public class FaunusVertexAnnotatingReducer extends Reducer<LongWritable, FaunusV
         }
 
         annotate(faunusVertex);
-
 
         context.write(NullWritable.get(), faunusVertex);
         context.getCounter("Completed", "Verticies").increment(1L);

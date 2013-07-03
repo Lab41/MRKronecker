@@ -31,8 +31,5 @@ public class StochasticKroneckerDriverTest {
         String[] args = badArgs.split(" ");
         StochasticKroneckerDriver driver = new StochasticKroneckerDriver();
         assertEquals(driver.parseArgs(args), false);
-
-
-
     }
 }

@@ -4,13 +4,18 @@ public class InitiatorMatrixUtils {
     public InitiatorMatrixUtils() {
     }
 
+    /**
+     * Finds the sum of the elements of the given initiator matrix.
+     * @param initiatorMatrix
+     * @return 
+     */
     public static double calculateMatrixSum(double[][] initiatorMatrix)
     {
 
         double sum = 0d;
         for(int i=0 ; i < initiatorMatrix.length; i++)
         {
-            for(int k=0; k< initiatorMatrix[i].length; k++)
+            for(int k=0; k < initiatorMatrix[i].length; k++)
             {
                 sum += initiatorMatrix[i][k];
             }
@@ -20,7 +25,7 @@ public class InitiatorMatrixUtils {
 
 
     /**
-     * Expects the probablity matrix as a comma seperated string " t11, t12, t21, t22"
+     * Expects the probability matrix as a comma separated string " t11, t12, t21, t22"
      *
      * @param strProbabilityMartix
      * @return

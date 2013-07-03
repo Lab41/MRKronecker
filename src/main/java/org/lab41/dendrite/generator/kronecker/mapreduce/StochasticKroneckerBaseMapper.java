@@ -12,6 +12,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
+ * The base mapper class for the Stochastic Kronecker graph generator, storing
+ * the initiator matrix, the size of the graph, and some other bookkeeping
+ * attributes for efficiency.
+ * 
  * @author kramachandran
  */
 public abstract class StochasticKroneckerBaseMapper<KEYIN, VALUEIN> extends Mapper<KEYIN, VALUEIN, LongWritable, FaunusVertex> {
@@ -25,9 +29,7 @@ public abstract class StochasticKroneckerBaseMapper<KEYIN, VALUEIN> extends Mapp
     protected FaunusVertex faunusVertex = new FaunusVertex();
     protected FaunusEdge faunusEdge = new FaunusEdge();
 
-    org.apache.hadoop.io.LongWritable vertextId = new org.apache.hadoop.io.LongWritable();
-
-
+    org.apache.hadoop.io.LongWritable vertexId = new org.apache.hadoop.io.LongWritable();
 
     protected FaunusVertex createVertex(long u) {
         return faunusVertex.reuse(u);

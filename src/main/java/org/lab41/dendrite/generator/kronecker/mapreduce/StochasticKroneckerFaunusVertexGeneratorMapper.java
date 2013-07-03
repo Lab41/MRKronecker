@@ -21,7 +21,7 @@ import java.util.UUID;
  * For example, if this mapper is invoked with <LongWritable(5), NullWritable> then the map function will generate
  * all edges emanating from that node (node id = 5). Each edge is emitted as a (Src, Dest) KV pair as  it is generated.
  * <p/>
- * The  Kornecker Graph Generation algorithm is explained in :
+ * The Kronecker Graph Generation algorithm is explained in :
  * <p/>
  * Leskovec, Jurij, Deepayan Chakrabarti, Jon Kleinberg, and Christos Faloutsos.
  * "Realistic, mathematically tractable graph generation and evolution, using kronecker multiplication."
@@ -35,8 +35,6 @@ import java.util.UUID;
 public class StochasticKroneckerFaunusVertexGeneratorMapper extends StochasticKroneckerBaseMapper<MatrixBlockInputSplit, NullWritable> {
 
     private Logger logger = LoggerFactory.getLogger(StochasticKroneckerFaunusVertexGeneratorMapper.class);
-
-
 
     @Override
     protected void map(MatrixBlockInputSplit key, NullWritable value, Context context) throws IOException, InterruptedException {
@@ -67,7 +65,7 @@ public class StochasticKroneckerFaunusVertexGeneratorMapper extends StochasticKr
         for (long u = row_start; u <= row_end; u++) {
             //create the vertex
             FaunusVertex vertex = createVertex(u);
-            vertextId.set(u);
+            vertexId.set(u);
 
             //annotate the vertex
 
@@ -92,7 +90,7 @@ public class StochasticKroneckerFaunusVertexGeneratorMapper extends StochasticKr
             }
 
             context.getCounter("Completed", "EdgesWritten").increment(edgesWritten);
-            context.write(vertextId, vertex);
+            context.write(vertexId, vertex);
         }
 
         context.getCounter("Completed", "Blocks Completed").increment(1l);

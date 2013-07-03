@@ -16,19 +16,19 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
- * This is a driver for a map-only job that generates a stochastic kronecker graph.
+ * This is a driver for a map-only job that generates a stochastic Kronecker graph.
  * <p/>
  * The driver expects the following arguments:
  * <ul>
  * <li>outputPath</li>
  * <li>n - log_2(N) - where N is the number of nodes in the graph (the number of nodes in a graph generator using this</li>
  * method should always be a power of two.
- * <li>t_11, t_12, t_21, t_31 - the stochasic initator matrix. The sum of these variables should be 1.</li>
+ * <li>t_11, t_12, t_21, t_31 - the stochastic initiator matrix. The sum of these variables should be 1.</li>
  * </ul>
  * <p/>
  * <p/>
  * <p/>
- * The arguments should be provided as follows :
+ * The arguments should be provided as follows:
  * <p/>
  * StochasticKroneckerDriver outputPath n t_11 t_12 t_21 t_31
  * <p/>

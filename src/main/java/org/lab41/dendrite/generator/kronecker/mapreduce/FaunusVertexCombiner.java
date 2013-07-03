@@ -11,6 +11,8 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 
 /**
+ * Resolves conflicts when two map processes generate the same edge.
+ * 
  * @author kramachandran
  */
 public class FaunusVertexCombiner extends Reducer<LongWritable, FaunusVertex, LongWritable, FaunusVertex> {
@@ -26,7 +28,7 @@ public class FaunusVertexCombiner extends Reducer<LongWritable, FaunusVertex, Lo
             if(context.getConfiguration().getBoolean(Constants.CHECK_FOR_CONFLICTS, true))
             {
                 //TODO: Add code to check for conflicts.
-
+                
             }
             faunusVertex.addAll(value);
         }
