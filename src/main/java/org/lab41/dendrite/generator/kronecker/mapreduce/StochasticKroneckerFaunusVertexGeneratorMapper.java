@@ -147,8 +147,6 @@ public class StochasticKroneckerFaunusVertexGeneratorMapper extends StochasticKr
             logger.debug(prob_row_col);
         }
 
-
-
         return probaility_matrix[prob_row][prob_column];
     }
 }

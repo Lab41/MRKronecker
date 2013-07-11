@@ -32,7 +32,7 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
      * @param cellProbabilityVector
      * @return 
      */
-    public ProbabilityAndPair getRowColoumnForProbability(double probability, ArrayList<ProbabilityAndPair> cellProbabilityVector) {
+    public ProbabilityAndPair getRowColumnForProbability(double probability, ArrayList<ProbabilityAndPair> cellProbabilityVector) {
         int i = 0;
         while (probability > cellProbabilityVector.get(i).prob) {
             i++;
@@ -115,12 +115,12 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
         for(int i = 1 ; i < this.n ; i++)
         {
             double probl = uniform.nextDouble();
-            ProbabilityAndPair probabilityAndPair = getRowColoumnForProbability(probl, this.cellProbabilityVector);
+            ProbabilityAndPair probabilityAndPair = getRowColumnForProbability(probl, this.cellProbabilityVector);
 
             //TODO: remove assumption of 2x2 initator matrix
             range /= 2;
-            row += probabilityAndPair.row *range;
-            col += probabilityAndPair.col*range;
+            row += probabilityAndPair.row * range;
+            col += probabilityAndPair.col * range;
         }
 
         faunusVertex = createVertex(row);
@@ -128,7 +128,7 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
         faunusVertex.addEdge(Direction.OUT, faunusEdge);
         nodeId.set(row);
         context.write(nodeId, faunusVertex);
-        //TODO: add code to handle the case of a collision.
+
         context.getCounter("Completed", "Edges Written").increment(1L);
     }
 
