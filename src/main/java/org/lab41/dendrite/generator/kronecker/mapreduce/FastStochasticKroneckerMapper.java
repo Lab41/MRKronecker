@@ -45,12 +45,12 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
      * and cumulative probability for a cell of the initiator matrix. All
      * three parameters are immutable upon initialization.
      */
-    public class ProbabilityAndPair{
+    public static class ProbabilityAndPair{
         public final long row;
         public final long col;
-        public final Double prob;
+        public final double prob; //why is this Double rather than double?
 
-        public ProbabilityAndPair(long x,long y, Double prob)
+        public ProbabilityAndPair(long x,long y, double prob)
         {
             this.row = x;
             this.col = y;
@@ -66,7 +66,7 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
      * @param initiatorMatrix
      * @return 
      */
-    protected ArrayList<ProbabilityAndPair> buildProbVector(double[][] initiatorMatrix)
+    protected static ArrayList<ProbabilityAndPair> buildProbVector(double[][] initiatorMatrix)
     {
        ArrayList<ProbabilityAndPair> probabilityAndPairsList = new ArrayList<ProbabilityAndPair>();
        double cumulativeProb = 0d;
@@ -93,7 +93,8 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         super.setup(context);
-        this.cellProbabilityVector = buildProbVector(probablity_matrix);
+        this.cellProbabilityVector.clear();
+        this.cellProbabilityVector.addAll(buildProbVector(probablity_matrix));
         //TODO: remove assumption of 2x2 initiator matrix
         this.dimNodes = (long) Math.pow(2, this.n);
 
