@@ -112,7 +112,7 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
         long row = 0l;
         long col = 0l;
 
-        for(int i = 1 ; i < this.n ; i++)
+        for(int i = 0 ; i < this.n ; i++)
         {
             double probl = uniform.nextDouble();
             ProbabilityAndPair probabilityAndPair = getRowColumnForProbability(probl, this.cellProbabilityVector);
