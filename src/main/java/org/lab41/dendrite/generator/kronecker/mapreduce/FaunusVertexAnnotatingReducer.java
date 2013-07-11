@@ -1,12 +1,17 @@
 package org.lab41.dendrite.generator.kronecker.mapreduce;
 
 import com.thinkaurelius.faunus.FaunusVertex;
+import com.thinkaurelius.faunus.FaunusEdge;
+import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Edge;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -15,6 +20,7 @@ import java.util.UUID;
  */
 public class FaunusVertexAnnotatingReducer extends Reducer<LongWritable, FaunusVertex, NullWritable, FaunusVertex>{
     private  FaunusVertex faunusVertex = new FaunusVertex();
+    Set<Long> otherVertices = new HashSet<Long>();
     protected void annotate(FaunusVertex vertex) {
         vertex.setProperty("uuid", UUID.randomUUID().toString());
         vertex.setProperty("name", UUID.randomUUID().toString());
@@ -40,13 +46,22 @@ public class FaunusVertexAnnotatingReducer extends Reducer<LongWritable, FaunusV
 
         for(FaunusVertex value: values)
         {
-           faunusVertex.addAll(value);
+            otherVertices.clear();
+            
+            for(Edge e: value.getEdges(Direction.OUT))
+            {
+                long otherID = ((FaunusVertex) e.getVertex(Direction.IN)).getIdAsLong();
+                if(!otherVertices.contains(otherID))
+                {
+                    faunusVertex.addEdge(Direction.OUT, e.getLabel(), otherID);
+                    otherVertices.add(otherID);
+                }
+            }
         }
 
         annotate(faunusVertex);
 
         context.write(NullWritable.get(), faunusVertex);
         context.getCounter("Completed", "Verticies").increment(1L);
-
     }
 }
