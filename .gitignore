@@ -3,3 +3,4 @@
 .idea
 target/**
 .DS_Store
+generated-data/
