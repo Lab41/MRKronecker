@@ -5,7 +5,6 @@ import com.tinkerpop.blueprints.Direction;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.FastKroneckerInputSplit;
-import sun.security.provider.NativePRNG;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,10 +44,10 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
      * and cumulative probability for a cell of the initiator matrix. All
      * three parameters are immutable upon initialization.
      */
-    public static class ProbabilityAndPair{
+    public static class ProbabilityAndPair {
         public final long row;
         public final long col;
-        public final double prob; //why is this Double rather than double?
+        public final double prob;
 
         public ProbabilityAndPair(long x,long y, double prob)
         {
@@ -87,14 +86,13 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
             }
         }
         return probabilityAndPairsList;
-
     }
     
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         super.setup(context);
         this.cellProbabilityVector.clear();
-        this.cellProbabilityVector.addAll(buildProbVector(probablity_matrix));
+        this.cellProbabilityVector.addAll(buildProbVector(probabilityMatrix));
         //TODO: remove assumption of 2x2 initiator matrix
         this.dimNodes = (long) Math.pow(2, this.n);
 
@@ -108,12 +106,11 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
      * @throws InterruptedException 
      */
     protected void placeEdge(Context context) throws IOException, InterruptedException {
-
         long range = dimNodes;
         long row = 0l;
         long col = 0l;
 
-        for(int i = 0 ; i < this.n ; i++)
+        for(int i = 0; i < this.n ; i++)
         {
             double probl = uniform.nextDouble();
             ProbabilityAndPair probabilityAndPair = getRowColumnForProbability(probl, this.cellProbabilityVector);
@@ -138,7 +135,7 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
 
         //Ensure that all nodes get created, even if they have no edges.
         //each mapper has a range of nodes its responsible for creating.
-        for (long i = key.getStartNode(); i <= key.getEndNode(); i ++)
+        for (long i = key.getStartNode(); i <= key.getEndNode(); i++)
         {
             FaunusVertex node = createVertex(i);
             nodeId.set(i);
@@ -148,7 +145,7 @@ public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper
         //Create the edges
         //The total number of edges in the graph is calculated by the FastKroneckerInputFormat
         //Each mapper is given a quota of edges to place.
-        for (int edges = 0 ; edges < key.getQuota(); edges++ )
+        for (int edges = 0; edges < key.getQuota(); edges++)
         {
             placeEdge(context);
         }

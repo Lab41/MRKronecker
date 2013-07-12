@@ -6,8 +6,6 @@ import com.thinkaurelius.faunus.FaunusVertex;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -24,7 +22,7 @@ public abstract class StochasticKroneckerBaseMapper<KEYIN, VALUEIN> extends Mapp
 
     protected Uniform uniform = null;
     protected Configuration configuration;
-    protected double[][] probablity_matrix = null;
+    protected double[][] probabilityMatrix = null;
 
     protected FaunusVertex faunusVertex = new FaunusVertex();
     protected FaunusEdge faunusEdge = new FaunusEdge();
@@ -41,23 +39,22 @@ public abstract class StochasticKroneckerBaseMapper<KEYIN, VALUEIN> extends Mapp
     }
 
 
-    public double[][] getProbablity_matrix() {
-        return probablity_matrix;
+    public double[][] getProbabilityMatrix() {
+        return probabilityMatrix;
     }
 
-    public void setProbablity_matrix(double[][] probablity_matrix) {
-        this.probablity_matrix = probablity_matrix;
+    public void setProbabilityMatrix(double[][] probabilityMatrix) {
+        this.probabilityMatrix = probabilityMatrix;
     }
 
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         configuration = context.getConfiguration();
-        String N = configuration.get(Constants.N);
-        n = Integer.parseInt(N);
-        String strProbMatrix = configuration.get(Constants.PROBABLITY_MATRIX);
-        probablity_matrix = InitiatorMatrixUtils.parseInitiatorMatrix(strProbMatrix);
+        String nString = configuration.get(Constants.N);
+        n = Integer.parseInt(nString);
+        String strProbMatrix = configuration.get(Constants.PROBABILITY_MATRIX);
+        probabilityMatrix = InitiatorMatrixUtils.parseInitiatorMatrix(strProbMatrix);
         uniform = new Uniform(0, 1, 0);
-
     }
 
 

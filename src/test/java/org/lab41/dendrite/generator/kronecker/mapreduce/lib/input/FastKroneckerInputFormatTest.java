@@ -34,7 +34,7 @@ public class FastKroneckerInputFormatTest {
         when(mockJobConf.get(Constants.N)).thenReturn("16");
         Long blockSize = (long) Math.pow(2, 8);
         when(mockJobConf.getLong(eq(Constants.BLOCK_SIZE), anyLong())).thenReturn(blockSize);
-        when(mockJobConf.get(Constants.PROBABLITY_MATRIX)).thenReturn( "0.5, 0.5, 0.5, 0.5");
+        when(mockJobConf.get(Constants.PROBABILITY_MATRIX)).thenReturn( "0.5, 0.5, 0.5, 0.5");
 
         List<InputSplit> inputSplits = fastKroneckerInputFormat.getSplits(mockJobContext);
 

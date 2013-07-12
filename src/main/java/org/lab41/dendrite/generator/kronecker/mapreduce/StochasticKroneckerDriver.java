@@ -67,7 +67,7 @@ public class StochasticKroneckerDriver extends BaseDriver implements Tool {
         job.setOutputValueClass(FaunusVertex.class);
 
         //Set the configuration
-        job.getConfiguration().set(Constants.PROBABLITY_MATRIX, initiator);
+        job.getConfiguration().set(Constants.PROBABILITY_MATRIX, initiator);
         job.getConfiguration().set(Constants.N, Integer.toString(n));
         job.getConfiguration().set(Constants.BLOCK_SIZE, Long.toString((long) Math.pow(2, 16)));
         return job;

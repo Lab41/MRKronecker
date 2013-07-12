@@ -62,6 +62,6 @@ public class FaunusVertexAnnotatingReducer extends Reducer<LongWritable, FaunusV
         annotate(faunusVertex);
 
         context.write(NullWritable.get(), faunusVertex);
-        context.getCounter("Completed", "Verticies").increment(1L);
+        context.getCounter("Completed", "Vertices").increment(1L);
     }
 }

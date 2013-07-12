@@ -57,7 +57,7 @@ public class StochasticKroneckerGeneratorMapperTest {
     public void testMap() throws Exception {
         Configuration conf = new Configuration();
         conf.set(Constants.N, "2");
-        conf.set(Constants.PROBABLITY_MATRIX, "1, 1, 1, 1");
+        conf.set(Constants.PROBABILITY_MATRIX, "1, 1, 1, 1");
 
         MapDriver<MatrixBlockInputSplit, NullWritable, LongWritable, LongWritable> mapDriver
                 = new MapDriver<MatrixBlockInputSplit, NullWritable, LongWritable, LongWritable>();

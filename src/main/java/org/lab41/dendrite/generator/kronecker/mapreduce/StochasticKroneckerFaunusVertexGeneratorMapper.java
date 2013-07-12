@@ -107,7 +107,7 @@ public class StochasticKroneckerFaunusVertexGeneratorMapper extends StochasticKr
     protected boolean placeEdge(long u, long v, int n, double threshold) {
         double p_uv = 1d; //probability
         for (int i = 0; i < n; i++) {
-            double probability = getProbabilityForIteration(u, v, i, probablity_matrix);
+            double probability = getProbabilityForIteration(u, v, i, probabilityMatrix);
             p_uv = probability * p_uv;
             if (threshold > p_uv) {
                 return false;

@@ -23,7 +23,7 @@ public class FastKroneckerInputFormat extends InputFormat<FastKroneckerInputSpli
     @Override
     public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
         Configuration conf = context.getConfiguration();
-        String strProbMatrix = conf.get(Constants.PROBABLITY_MATRIX);
+        String strProbMatrix = conf.get(Constants.PROBABILITY_MATRIX);
         double[][] initatorMatrix = InitiatorMatrixUtils.parseInitiatorMatrix(strProbMatrix);
         double sumInitatorMatrix = InitiatorMatrixUtils.calculateMatrixSum(initatorMatrix);
         int n = Integer.parseInt(conf.get(Constants.N));
@@ -33,38 +33,32 @@ public class FastKroneckerInputFormat extends InputFormat<FastKroneckerInputSpli
         long startSequence = 1l;
         long endSequence = (long) Math.pow(2, n);
 
-        log.info("total edges : " + totalEdges);
-        log.info("Interval : " + startSequence + "," + endSequence);
-        log.info("Block Size " + block_size);
+        log.info("Total edges: " + totalEdges);
+        log.info("Interval: " + startSequence + "," + endSequence);
+        log.info("Block size: " + block_size);
 
         double rawNumberOfSplits = ((double)(endSequence-startSequence+1))/(double)block_size;
-        log.info("Raw Number of Split : " + rawNumberOfSplits);
+        log.info("Raw number of splits: " + rawNumberOfSplits);
 
 
-        long numberOfSplits = (long)Math.ceil(rawNumberOfSplits);
-        log.info("number of splits" + numberOfSplits);
+        long numberOfSplits = (long) Math.ceil(rawNumberOfSplits);
+        log.info("Number of splits: " + numberOfSplits);
 
         long quota = (long) Math.round(totalEdges / numberOfSplits);
-        log.info("quota " + quota);
+        log.info("Quota: " + quota);
 
 
         List<InputSplit> splits = new ArrayList<InputSplit>();
 
-
         for (long i = startSequence; i < endSequence; i += block_size) {
-
             long startInterval = i;
-
             long endInterval = i + block_size - 1;
+            if (endInterval > endSequence) endInterval = endSequence;
 
-            if (endInterval > endSequence)
-                endInterval = endSequence;
-
-            log.info("adding a split for :" + i + "," + endInterval);
-            FastKroneckerInputSplit split = new FastKroneckerInputSplit(startInterval, endInterval,quota);
+            log.info("adding a split for: " + i + "," + endInterval);
+            FastKroneckerInputSplit split = new FastKroneckerInputSplit(startInterval,endInterval,quota);
             splits.add(split);
         }
-
 
         return splits;
 
