@@ -16,7 +16,7 @@ import java.io.IOException;
  * 
  * @author kramachandran
  */
-public abstract class StochasticKroneckerBaseMapper<KEYIN, VALUEIN> extends Mapper<KEYIN, VALUEIN, LongWritable, FaunusVertex> {
+public abstract class StochasticKroneckerBaseMapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends Mapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 
     protected int n = 0;   // Where 2^n is the size of the graph.
 
@@ -32,7 +32,6 @@ public abstract class StochasticKroneckerBaseMapper<KEYIN, VALUEIN> extends Mapp
     protected FaunusVertex createVertex(long u) {
         return faunusVertex.reuse(u);
     }
-
 
     protected FaunusEdge createEdge(long srcVertex, long destVertex) {
         return faunusEdge.reuse(-1l, srcVertex, destVertex, "RELATIONSHIP");
