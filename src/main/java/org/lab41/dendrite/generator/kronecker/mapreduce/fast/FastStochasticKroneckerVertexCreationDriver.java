@@ -44,6 +44,9 @@ public class FastStochasticKroneckerVertexCreationDriver extends BaseDriver impl
         /* Configure Map Output */
         job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(FaunusVertex.class);
+        
+        job.setOutputKeyClass(LongWritable.class);
+        job.setOutputValueClass(FaunusVertex.class);
 
         //Set the configuration
         job.getConfiguration().set(Constants.PROBABILITY_MATRIX, initiator);
