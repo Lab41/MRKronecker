@@ -15,7 +15,6 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.lab41.dendrite.generator.kronecker.mapreduce.BaseDriver;
 import org.lab41.dendrite.generator.kronecker.mapreduce.Constants;
-import org.lab41.dendrite.generator.kronecker.mapreduce.FastStochasticKroneckerDriver;
 import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.FastStochasticKroneckerRangeInputFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +70,7 @@ public class FastStochasticKroneckerVertexCreationDriver extends BaseDriver impl
     }
     
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new FastStochasticKroneckerDriver(), args);
+        int exitCode = ToolRunner.run(new FastStochasticKroneckerVertexCreationDriver(), args);
 
         System.exit(exitCode);
     }

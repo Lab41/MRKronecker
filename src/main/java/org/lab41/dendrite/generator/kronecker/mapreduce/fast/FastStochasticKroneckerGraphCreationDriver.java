@@ -18,7 +18,6 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.lab41.dendrite.generator.kronecker.mapreduce.BaseDriver;
 import org.lab41.dendrite.generator.kronecker.mapreduce.Constants;
-import org.lab41.dendrite.generator.kronecker.mapreduce.FastStochasticKroneckerDriver;
 
 /**
  *
@@ -76,7 +75,7 @@ public class FastStochasticKroneckerGraphCreationDriver extends BaseDriver imple
     }
     
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new FastStochasticKroneckerDriver(), args);
+        int exitCode = ToolRunner.run(new FastStochasticKroneckerGraphCreationDriver(), args);
 
         System.exit(exitCode);
     }
