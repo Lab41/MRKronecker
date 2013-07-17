@@ -12,12 +12,11 @@ import java.io.IOException;
  * @author kramachandran
  */
 public abstract class BaseDriver extends Configured {
-    Path outputPath;
-    String initiator;
-    int n;
+    protected Path outputPath;
+    protected String initiator;
+    protected int n;
 
     protected boolean parseArgs(String[] args) {
-
         if (args.length != 6) {
             return false;
 
@@ -42,7 +41,6 @@ public abstract class BaseDriver extends Configured {
 
         }
         return true;
-
     }
 
     public abstract Job configureGeneratorJob(Configuration conf) throws IOException;
