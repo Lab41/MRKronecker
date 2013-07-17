@@ -2,12 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.lab41.dendrite.generator.kronecker.mapreduce;
+package org.lab41.dendrite.generator.kronecker.mapreduce.fast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
+import org.lab41.dendrite.generator.kronecker.mapreduce.InitiatorMatrixUtils;
+import org.lab41.dendrite.generator.kronecker.mapreduce.StochasticKroneckerBaseMapper;
 import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.FastStochasticKroneckerQuotaInputSplit;
 
 /**
@@ -15,10 +17,10 @@ import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.FastStochastic
  * @author ndesai
  */
 public class FastStochasticKroneckerEdgeCreationMapper extends StochasticKroneckerBaseMapper<FastStochasticKroneckerQuotaInputSplit, NullWritable, NodeTuple, NullWritable> {
-    public ArrayList<ProbabilityAndPair> cellProbabilityVector = new ArrayList<ProbabilityAndPair>();
-    public LongWritable nodeId = new LongWritable();
-    public NodeTuple edge = new NodeTuple();
-    protected long dimNodes = 0l;
+    ArrayList<ProbabilityAndPair> cellProbabilityVector = new ArrayList<ProbabilityAndPair>();
+    LongWritable nodeId = new LongWritable();
+    NodeTuple edge = new NodeTuple();
+    long dimNodes = 0l;
     
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
@@ -35,7 +37,7 @@ public class FastStochasticKroneckerEdgeCreationMapper extends StochasticKroneck
      * and cumulative probability for a cell of the initiator matrix. All
      * three parameters are immutable upon initialization.
      */
-    public static class ProbabilityAndPair {
+    private static class ProbabilityAndPair {
         public final long row;
         public final long col;
         public final double prob;
@@ -56,7 +58,7 @@ public class FastStochasticKroneckerEdgeCreationMapper extends StochasticKroneck
      * @param cellProbabilityVector
      * @return 
      */
-    public ProbabilityAndPair getRowColumnForProbability(double probability, ArrayList<ProbabilityAndPair> cellProbabilityVector) {
+    private ProbabilityAndPair getRowColumnForProbability(double probability, ArrayList<ProbabilityAndPair> cellProbabilityVector) {
         int i = 0;
         while (probability > cellProbabilityVector.get(i).prob) {
             i++;

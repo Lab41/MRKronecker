@@ -2,12 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.lab41.dendrite.generator.kronecker.mapreduce;
+package org.lab41.dendrite.generator.kronecker.mapreduce.fast;
 
 import com.thinkaurelius.faunus.FaunusVertex;
 import java.io.IOException;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
+import org.lab41.dendrite.generator.kronecker.mapreduce.StochasticKroneckerBaseMapper;
 import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.FastStochasticKroneckerRangeInputSplit;
 
 /**

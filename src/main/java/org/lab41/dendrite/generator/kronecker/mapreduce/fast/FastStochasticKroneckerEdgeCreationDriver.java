@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.lab41.dendrite.generator.kronecker.mapreduce;
+package org.lab41.dendrite.generator.kronecker.mapreduce.fast;
 
 import com.thinkaurelius.faunus.FaunusVertex;
 import java.io.IOException;
@@ -10,42 +10,47 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.lab41.dendrite.generator.kronecker.mapreduce.BaseDriver;
+import org.lab41.dendrite.generator.kronecker.mapreduce.Constants;
+import org.lab41.dendrite.generator.kronecker.mapreduce.FastStochasticKroneckerDriver;
+import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.FastStochasticKroneckerQuotaInputFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerGraphCreationDriver extends BaseDriver implements Tool {
+public class FastStochasticKroneckerEdgeCreationDriver extends BaseDriver implements Tool {
+    Logger logger = LoggerFactory.getLogger(FastStochasticKroneckerEdgeCreationDriver.class);
 
     @Override
     public Job configureGeneratorJob(Configuration conf) throws IOException {
         Job job = new Job(getConf());
-        job.setJobName("FastStochasticKroneckerGraphCreation N=" + Integer.toString(n));
-        job.setJarByClass(FastStochasticKroneckerGraphCreationDriver.class);
+        job.setJobName("FastStochasticKroneckerEdgeCreation N=" + Integer.toString(n));
+        job.setJarByClass(FastStochasticKroneckerEdgeCreationDriver.class);
 
         /** Set the Mapper & Reducer**/
-        job.setMapperClass(Mapper.class);
-        job.setCombinerClass(FastStochasticKroneckerVertexCombiner.class);
-        job.setReducerClass(FastStochasticKroneckerAnnotatingVertexReducer.class);
+        job.setMapperClass(FastStochasticKroneckerEdgeCreationMapper.class);
+        job.setCombinerClass(FastStochasticKroneckerEdgeCombiner.class);
+        job.setReducerClass(FastStochasticKroneckerEdgeReducer.class);
 
         /* Configure Input Format to be our custom InputFormat */
-        job.setInputFormatClass(SequenceFileInputFormat.class);
+        job.setInputFormatClass(FastStochasticKroneckerQuotaInputFormat.class);
         job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
         FileOutputFormat.setOutputPath(job, outputPath);
 
         /* Configure Map Output */
-        job.setMapOutputKeyClass(LongWritable.class);
-        job.setMapOutputValueClass(FaunusVertex.class);
+        job.setMapOutputKeyClass(NodeTuple.class);
+        job.setMapOutputValueClass(NullWritable.class);
 
         /* Configure job (Reducer) output */
-        job.setOutputKeyClass(NullWritable.class);
+        job.setOutputKeyClass(LongWritable.class);
         job.setOutputValueClass(FaunusVertex.class);
 
         //Set the configuration
@@ -77,5 +82,4 @@ public class FastStochasticKroneckerGraphCreationDriver extends BaseDriver imple
 
         System.exit(exitCode);
     }
-    
 }
