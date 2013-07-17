@@ -4,7 +4,6 @@ import cern.jet.random.Uniform;
 import com.thinkaurelius.faunus.FaunusEdge;
 import com.thinkaurelius.faunus.FaunusVertex;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
@@ -19,11 +18,9 @@ import java.io.IOException;
 public abstract class StochasticKroneckerBaseMapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends Mapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 
     protected int n = 0;   // Where 2^n is the size of the graph.
-
     protected Uniform uniform = null;
     protected Configuration configuration;
     protected double[][] probabilityMatrix = null;
-
     protected FaunusVertex faunusVertex = new FaunusVertex();
     protected FaunusEdge faunusEdge = new FaunusEdge();
 

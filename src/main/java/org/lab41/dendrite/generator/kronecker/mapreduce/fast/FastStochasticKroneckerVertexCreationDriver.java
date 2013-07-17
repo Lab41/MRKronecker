@@ -8,7 +8,6 @@ import com.thinkaurelius.faunus.FaunusVertex;
 import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
@@ -52,7 +51,6 @@ public class FastStochasticKroneckerVertexCreationDriver extends BaseDriver impl
         job.getConfiguration().set(Constants.N, Integer.toString(n));
         job.getConfiguration().set(Constants.BLOCK_SIZE, Long.toString(1 << 20));
         return job;
-
     }
 
     public int run(String[] args) throws Exception {

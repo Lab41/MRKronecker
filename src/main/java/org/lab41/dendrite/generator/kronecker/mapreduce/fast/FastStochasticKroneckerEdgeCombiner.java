@@ -4,9 +4,6 @@
  */
 package org.lab41.dendrite.generator.kronecker.mapreduce.fast;
 
-import com.thinkaurelius.faunus.FaunusEdge;
-import com.thinkaurelius.faunus.FaunusVertex;
-import com.tinkerpop.blueprints.Direction;
 import java.io.IOException;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -15,13 +12,9 @@ import org.apache.hadoop.mapreduce.Reducer;
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerEdgeCombiner extends Reducer<NodeTuple, NullWritable, NodeTuple, NullWritable> {
-    private FaunusVertex faunusVertex = new FaunusVertex();
-    
+public class FastStochasticKroneckerEdgeCombiner extends Reducer<NodeTuple, NullWritable, NodeTuple, NullWritable> {    
     @Override
     protected void reduce(NodeTuple key, Iterable<NullWritable> values, Context context) throws IOException, InterruptedException {
-        //faunusVertex.reuse(key.getTail());
-        //faunusVertex.addEdge(Direction.OUT, "RELATIONSHIP", key.getHead());        
         context.write(key, NullWritable.get());
     }
 }
