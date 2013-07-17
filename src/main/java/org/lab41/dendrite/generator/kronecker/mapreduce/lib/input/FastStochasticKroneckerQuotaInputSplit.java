@@ -17,6 +17,9 @@ import org.apache.hadoop.mapreduce.InputSplit;
 public class FastStochasticKroneckerQuotaInputSplit extends InputSplit implements Writable {
     long quota;
 
+    public FastStochasticKroneckerQuotaInputSplit() {
+    }
+    
     public FastStochasticKroneckerQuotaInputSplit(long quota) {
         this.quota = quota;
     }

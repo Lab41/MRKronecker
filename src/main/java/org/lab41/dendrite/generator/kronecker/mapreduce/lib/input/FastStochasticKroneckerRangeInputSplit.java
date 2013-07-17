@@ -18,6 +18,9 @@ public class FastStochasticKroneckerRangeInputSplit extends InputSplit implement
     long start;
     long end;
 
+    public FastStochasticKroneckerRangeInputSplit() {
+    }
+    
     public FastStochasticKroneckerRangeInputSplit(long start, long end) {
         this.start = start;
         this.end = end;
