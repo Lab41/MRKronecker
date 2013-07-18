@@ -10,10 +10,8 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.FastKroneckerInputFormat;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 
 /**
@@ -58,28 +56,6 @@ public class FastStochasticKroneckerDriver extends BaseDriver implements Tool {
         return job;
     }
 
-    @Override
-    public int run(String[] args) throws Exception {
-        if (parseArgs(args)) {
-
-            Configuration conf = new Configuration();
-            Job job = configureGeneratorJob(conf);
-
-
-            if (job.waitForCompletion(true)) {
-                return 0;
-            } else {
-                return 1;
-            }
-        } else {
-            System.out.println("Usage : outputPath n t_11 t_12 t_21 t_31 \n" +
-                    "               n must be less than 64");
-            return 1;
-        }
-
-
-    }
-
     /**
      * Runs this tool using the provided command-line arguments
      * @param args Command line arguments
@@ -91,4 +67,3 @@ public class FastStochasticKroneckerDriver extends BaseDriver implements Tool {
         System.exit(exitCode);
     }
 }
-

@@ -52,17 +52,17 @@ public class StochasticKroneckerDriver extends BaseDriver implements Tool {
         job.setReducerClass(FaunusVertexAnnotatingReducer.class);
 
 
-            /* Configure Input Format to be our custom InputFormat */
+        /* Configure Input Format to be our custom InputFormat */
         job.setInputFormatClass(MatrixBlockInputFormat.class);
         job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
         FileOutputFormat.setOutputPath(job, outputPath);
 
-            /* Configure Map Output */
+        /* Configure Map Output */
         job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(FaunusVertex.class);
 
-            /* Configure job (Reducer) output */
+        /* Configure job (Reducer) output */
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(FaunusVertex.class);
 
@@ -72,29 +72,7 @@ public class StochasticKroneckerDriver extends BaseDriver implements Tool {
         job.getConfiguration().set(Constants.BLOCK_SIZE, Long.toString((long) Math.pow(2, 16)));
         return job;
     }
-
-    @Override
-    public int run(String[] args) throws Exception {
-        if (parseArgs(args)) {
-
-            Configuration conf = new Configuration();
-            Job job = configureGeneratorJob(conf);
-
-
-            if (job.waitForCompletion(true)) {
-                return 0;
-            } else {
-                return 1;
-            }
-        } else {
-            System.out.println("Usage : outputPath n t_11 t_12 t_21 t_31 \n" +
-                    "               n must be less than 64");
-            return 1;
-        }
-
-
-    }
-
+    
     public static void main(String[] args) throws Exception {
         int exitCode = ToolRunner.run(new StochasticKroneckerDriver(), args);
 

@@ -54,23 +54,6 @@ public class FastStochasticKroneckerVertexCreationDriver extends BaseDriver impl
         job.getConfiguration().set(Constants.BLOCK_SIZE, Long.toString(1 << 20));
         return job;
     }
-
-    public int run(String[] args) throws Exception {
-        if (parseArgs(args)) {
-            Configuration conf = new Configuration();
-            Job job = configureGeneratorJob(conf);
-
-            if (job.waitForCompletion(true)) {
-                return 0;
-            } else {
-                return 1;
-            }
-        } else {
-            System.out.println("Usage : outputPath n t_11 t_12 t_21 t_31 \n" +
-                    "               n must be less than 64");
-            return 1;
-        }
-    }
     
     public static void main(String[] args) throws Exception {
         int exitCode = ToolRunner.run(new FastStochasticKroneckerVertexCreationDriver(), args);
