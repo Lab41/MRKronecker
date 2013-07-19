@@ -131,13 +131,13 @@ public class StochasticKroneckerFaunusVertexGeneratorMapper extends StochasticKr
      */
     protected double getProbabilityForIteration(long u, long v, int i, double[][] probaility_matrix) {
         //TODO Remove assumption of 2x2 generator matrix;
-        long n_to_i = (long) Math.pow(2, i);
+        long two_to_i = 1 << i;
 
         //calculating which of the probabilities to use in this step of the product
         //by figuring out which of the entries in the initiator matrix should be used.
 
-        int prob_row = (int) (Math.floor((u - 1) / n_to_i) % 2);
-        int prob_column = (int) (Math.floor((v - 1) / n_to_i) % 2);
+        int prob_row = (int) (Math.floor(u / two_to_i)) % 2;
+        int prob_column = (int) (Math.floor(v / two_to_i)) % 2;
 
         if(logger.isDebugEnabled())
         {
