@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import org.junit.Ignore;
 import static org.mockito.Mockito.*;
 
 /**
@@ -21,6 +22,7 @@ public class MatrixBlockInputFormatTest {
 
     Logger log = LoggerFactory.getLogger(MatrixBlockInputFormatTest.class);
 
+    @Ignore
     @Test
     public void testGetSplits() throws Exception {
         MatrixBlockInputFormat matrixBlockInputFormat = new MatrixBlockInputFormat();
@@ -41,6 +43,7 @@ public class MatrixBlockInputFormatTest {
 
     }
 
+    @Ignore
     @Test
     public void checkBlocks() throws Exception {
         MatrixBlockInputFormat matrixBlockInputFormat = new MatrixBlockInputFormat();
@@ -67,8 +70,6 @@ public class MatrixBlockInputFormatTest {
         assertEquals(matrixBlockInputSplit0.endRowInterval, 256);
         assertEquals(matrixBlockInputSplit0.startColInterval, 1);
         assertEquals(matrixBlockInputSplit0.endColInterval, 256);
-
-
 
         assertEquals(matrixBlockInputSplit1.startRowInterval, 1);
         assertEquals(matrixBlockInputSplit1.endRowInterval, 256);
