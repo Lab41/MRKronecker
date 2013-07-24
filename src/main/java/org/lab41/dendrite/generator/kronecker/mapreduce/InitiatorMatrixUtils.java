@@ -1,9 +1,6 @@
 package org.lab41.dendrite.generator.kronecker.mapreduce;
 
 public class InitiatorMatrixUtils {
-    public InitiatorMatrixUtils() {
-    }
-
     /**
      * Finds the sum of the elements of the given initiator matrix.
      * @param initiatorMatrix
@@ -11,7 +8,6 @@ public class InitiatorMatrixUtils {
      */
     public static double calculateMatrixSum(double[][] initiatorMatrix)
     {
-
         double sum = 0d;
         for(int i=0 ; i < initiatorMatrix.length; i++)
         {

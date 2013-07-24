@@ -32,7 +32,7 @@ public class RangeRecordReader extends RecordReader<RangeInputSplit, NullWritabl
         {
             String logmessage =
                     String.format("QuotaRecordReader initialized for (%1$d,%2$d) ", inputSplit.getStart(), inputSplit.getEnd());
-
+            
             logger.debug(logmessage);
         }
     }
