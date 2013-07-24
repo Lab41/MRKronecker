@@ -16,7 +16,7 @@ import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.QuotaInputSpli
  * 
  * @author ndesai
  */
-public class EdgeCreationMapper extends StochasticKroneckerBaseMapper<QuotaInputSplit, NullWritable, NodeTuple, NullWritable> {
+public class EdgeCreationMapper extends StochasticKroneckerBaseMapper<QuotaInputSplit, NullWritable, NodeTuple, NullWritable> {    
     ArrayList<ProbabilityAndPair> cellProbabilityVector = new ArrayList<ProbabilityAndPair>();
     LongWritable nodeId = new LongWritable();
     NodeTuple edge = new NodeTuple();
@@ -26,7 +26,7 @@ public class EdgeCreationMapper extends StochasticKroneckerBaseMapper<QuotaInput
     protected void setup(Context context) throws IOException, InterruptedException {
         super.setup(context);
         this.cellProbabilityVector.clear();
-        buildProbVector(probabilityMatrix);
+        buildProbVector(probabilityMatrix, cellProbabilityVector);
         //TODO: remove assumption of 2x2 initiator matrix
         this.dimNodes = 1 << this.n;
     }
@@ -36,7 +36,7 @@ public class EdgeCreationMapper extends StochasticKroneckerBaseMapper<QuotaInput
      * and cumulative probability for a cell of the initiator matrix. All
      * three parameters are immutable upon initialization.
      */
-    private static class ProbabilityAndPair {
+    protected static class ProbabilityAndPair {
         public final long row;
         public final long col;
         public final double prob;
@@ -57,7 +57,7 @@ public class EdgeCreationMapper extends StochasticKroneckerBaseMapper<QuotaInput
      * @param cellProbabilityVector
      * @return 
      */
-    private ProbabilityAndPair getRowColumnForProbability(double probability, ArrayList<ProbabilityAndPair> cellProbabilityVector) {
+    protected static ProbabilityAndPair getRowColumnForProbability(double probability, ArrayList<ProbabilityAndPair> cellProbabilityVector) {
         int i = 0;
         while (probability > cellProbabilityVector.get(i).prob) {
             i++;
@@ -73,7 +73,7 @@ public class EdgeCreationMapper extends StochasticKroneckerBaseMapper<QuotaInput
      * @param initiatorMatrix
      * @return 
      */
-    protected void buildProbVector(double[][] initiatorMatrix)
+    protected static void buildProbVector(double[][] initiatorMatrix, ArrayList<ProbabilityAndPair> cellProbabilityVector)
     {
        cellProbabilityVector.clear();
        double cumulativeProb = 0d;
@@ -110,7 +110,6 @@ public class EdgeCreationMapper extends StochasticKroneckerBaseMapper<QuotaInput
             double probl = uniform.nextDouble();
             ProbabilityAndPair probabilityAndPair = getRowColumnForProbability(probl, this.cellProbabilityVector);
 
-            //TODO: remove assumption of 2x2 initator matrix
             range /= 2;
             row += probabilityAndPair.row * range;
             col += probabilityAndPair.col * range;
