@@ -34,7 +34,7 @@ public class EdgeCreationDriver extends BaseDriver implements Tool {
         /** Set the Mapper & Reducer**/
         job.setMapperClass(EdgeCreationMapper.class);
         job.setCombinerClass(EdgeCombiner.class);
-        job.setReducerClass(EdgeReducer.class);
+        job.setReducerClass(AnnotatingEdgeReducer.class);
 
         /* Configure Input Format to be our custom InputFormat */
         job.setInputFormatClass(QuotaInputFormat.class);
