@@ -1,6 +1,7 @@
 package org.lab41.dendrite.generator.kronecker.mapreduce.fast;
 
 import com.thinkaurelius.faunus.FaunusVertex;
+import com.tinkerpop.blueprints.Element;
 import java.io.IOException;
 import java.util.UUID;
 import org.apache.hadoop.io.LongWritable;
@@ -17,7 +18,13 @@ import org.lab41.dendrite.generator.kronecker.mapreduce.AnnotatingBaseReducer;
 public class AnnotatingVertexReducer extends AnnotatingBaseReducer<LongWritable, FaunusVertex, NullWritable, FaunusVertex> {
     private FaunusVertex faunusVertex = new FaunusVertex();
     
-    protected void annotate(FaunusVertex element) {
+    /**
+     * Annotates the given element with a random UUID and name, in addition to
+     * other random attributes selected by the parent class's method.
+     * @param element 
+     */
+    @Override
+    protected void annotate(Element element) {
         element.setProperty("uuid", UUID.randomUUID().toString());
         element.setProperty("name", UUID.randomUUID().toString());
         super.annotate(element);

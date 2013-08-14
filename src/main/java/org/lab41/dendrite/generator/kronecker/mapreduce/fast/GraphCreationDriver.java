@@ -15,6 +15,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.lab41.dendrite.generator.kronecker.mapreduce.Constants;
 
 /**
  * Driver class for generating a stochastic Kronecker graph from the outputs
@@ -28,19 +29,22 @@ import org.apache.hadoop.util.ToolRunner;
  * @author ndesai
  */
 public class GraphCreationDriver extends Configured implements Tool {
+    protected int numAnnotations;
     protected Path edgeInputPath;
     protected Path vertexInputPath;
     protected Path outputPath;
     
-    private static final String USAGE_STRING = "Usage: FastStochasticKroneckerGraphCreationDriver <edgeInputFilePath> <vertexInputFilePath> <outputPath>";
-    private static final int NUM_ARGS = 3;
+    private static final String USAGE_STRING = "Usage: FastStochasticKroneckerGraphCreationDriver <numAnnotations> <edgeInputFilePath> <vertexInputFilePath> <outputPath>\n" + 
+                                               "           numAnnotations must be less than 21.";
+    private static final int NUM_ARGS = 4;
     
     protected boolean parseArgs(String[] args) {
         if (args.length != NUM_ARGS) return false;
-                
-        edgeInputPath = new Path(args[0]);
-        vertexInputPath = new Path(args[1]);
-        outputPath = new Path(args[2]);
+        
+        numAnnotations = Integer.parseInt(args[0]);
+        edgeInputPath = new Path(args[1]);
+        vertexInputPath = new Path(args[2]);
+        outputPath = new Path(args[3]);
         return true;
     }
     
@@ -70,6 +74,8 @@ public class GraphCreationDriver extends Configured implements Tool {
         /* Configure job (Reducer) output */
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(FaunusVertex.class);
+        
+        job.getConfiguration().setInt(Constants.NUM_ANNOTATIONS, numAnnotations);
         
         return job;
     }

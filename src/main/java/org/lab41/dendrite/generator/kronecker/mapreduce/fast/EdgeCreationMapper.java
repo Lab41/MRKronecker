@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.lab41.dendrite.generator.kronecker.mapreduce.InitiatorMatrixUtils;
-import org.lab41.dendrite.generator.kronecker.mapreduce.StochasticKroneckerBaseMapper;
+import org.lab41.dendrite.generator.kronecker.mapreduce.BaseMapper;
 import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.QuotaInputSplit;
 
 /**
@@ -16,7 +16,7 @@ import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.QuotaInputSpli
  * 
  * @author ndesai
  */
-public class EdgeCreationMapper extends StochasticKroneckerBaseMapper<QuotaInputSplit, NullWritable, NodeTuple, NullWritable> {    
+public class EdgeCreationMapper extends BaseMapper<QuotaInputSplit, NullWritable, NodeTuple, NullWritable> {    
     ArrayList<ProbabilityAndPair> cellProbabilityVector = new ArrayList<ProbabilityAndPair>();
     LongWritable nodeId = new LongWritable();
     NodeTuple edge = new NodeTuple();

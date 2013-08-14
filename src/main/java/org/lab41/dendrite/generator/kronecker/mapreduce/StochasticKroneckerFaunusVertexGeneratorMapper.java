@@ -32,7 +32,7 @@ import java.util.UUID;
  *
  * @author kramachandran
  */
-public class StochasticKroneckerFaunusVertexGeneratorMapper extends StochasticKroneckerBaseMapper<MatrixBlockInputSplit, NullWritable, LongWritable, FaunusVertex> {
+public class StochasticKroneckerFaunusVertexGeneratorMapper extends BaseMapper<MatrixBlockInputSplit, NullWritable, LongWritable, FaunusVertex> {
 
     private Logger logger = LoggerFactory.getLogger(StochasticKroneckerFaunusVertexGeneratorMapper.class);
 

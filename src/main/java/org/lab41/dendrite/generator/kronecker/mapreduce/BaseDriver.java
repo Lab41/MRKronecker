@@ -19,15 +19,17 @@ import java.io.IOException;
  * @author kramachandran
  */
 public abstract class BaseDriver extends Configured {
+    protected int numAnnotations;
     protected Path outputPath;
     protected String initiator;
     protected int n;
     
     private static final String USAGE_STRING = 
-               "Arguments: <outputPath> <number of iterations> t_11 t_12 t_21 t_22\n" +
+               "Arguments: <outputPath> <number of annotations> <number of iterations> t_11 t_12 t_21 t_22\n" +
                "           Number of iterations must be less than 64.";
-    private static final int NUM_ARGS = 6;
+    private static final int NUM_ARGS = 7;
     private static final int MAX_ITERATIONS = 63;
+    private static final int MAX_ANNOTATIONS = 20;
 
     protected boolean parseArgs(String[] args) {
         if (args.length != NUM_ARGS) {
@@ -35,15 +37,16 @@ public abstract class BaseDriver extends Configured {
         } else {
             outputPath = new Path(args[0]);
 
-            n = Integer.parseInt(args[1]);
-            if (n > MAX_ITERATIONS) {
-                return false;
-            }
+            numAnnotations = Integer.parseInt(args[1]);
+            if(numAnnotations > MAX_ANNOTATIONS) return false;
+            
+            n = Integer.parseInt(args[2]);
+            if(n > MAX_ITERATIONS) return false;
 
-            String t_11 = args[2];
-            String t_12 = args[3];
-            String t_21 = args[4];
-            String t_22 = args[5];
+            String t_11 = args[3];
+            String t_12 = args[4];
+            String t_21 = args[5];
+            String t_22 = args[6];
             initiator = t_11 + ", " + t_12 + ", " + t_21 + ", " + t_22;
         }
         return true;

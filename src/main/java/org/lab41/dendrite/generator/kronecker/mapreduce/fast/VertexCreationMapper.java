@@ -4,7 +4,7 @@ import com.thinkaurelius.faunus.FaunusVertex;
 import java.io.IOException;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
-import org.lab41.dendrite.generator.kronecker.mapreduce.StochasticKroneckerBaseMapper;
+import org.lab41.dendrite.generator.kronecker.mapreduce.BaseMapper;
 import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.RangeInputSplit;
 
 /**
@@ -14,7 +14,7 @@ import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.RangeInputSpli
  * 
  * @author ndesai
  */
-public class VertexCreationMapper extends StochasticKroneckerBaseMapper<RangeInputSplit, NullWritable, LongWritable, FaunusVertex>{
+public class VertexCreationMapper extends BaseMapper<RangeInputSplit, NullWritable, LongWritable, FaunusVertex>{
     private LongWritable nodeID = new LongWritable();
     protected long dimNodes = 0l;
     

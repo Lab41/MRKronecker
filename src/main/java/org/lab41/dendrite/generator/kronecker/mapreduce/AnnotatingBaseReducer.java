@@ -17,32 +17,33 @@ import org.apache.hadoop.mapreduce.Reducer;
  */
 public abstract class AnnotatingBaseReducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends Reducer<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 
-    protected int numAnnotations = 0;   // Where 2^n is the size of the graph.
+    protected int numAnnotations = 0;
+    protected int midAnnotations = 0;
     protected Uniform uniform = null;
     protected Configuration configuration;
 
     /**
-     * Annotates the given FaunusVertex with a random UUID, random name,
-     * ten random floats, and ten random strings.
-     * @param vertex 
+     * Annotates the given element with k random floats, and ten random strings, 
+     * where k is the number of annotations passed in at the command line.
+     * @param vertex
      */
     protected void annotate(Element element) {
         //Add a bunch of longs
-        for (int i = 0; i < numAnnotations; i++) {
+        for (int i = 0; i < midAnnotations; i++) {
             element.setProperty("randLong" + Integer.toString(i), uniform.nextDouble());
         }
 
         //Add a bunch of random strings
-        for (int i = 0; i < numAnnotations; i++) {
-            element.setProperty("randString" + Integer.toString(i), RandomStringUtils.randomAlphanumeric((int) Math.floor(Math.random() * 150)));
+        for (int i = 0; i < numAnnotations-midAnnotations; i++) {
+            element.setProperty("randString" + Integer.toString(i), RandomStringUtils.randomAlphanumeric((int) Math.floor(uniform.nextDouble() * 150)));
         }
     }
     
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         configuration = context.getConfiguration();
-        String nString = configuration.get(Constants.NUM_ANNOTATIONS);
-        numAnnotations = Integer.parseInt(nString);
+        numAnnotations = configuration.getInt(Constants.NUM_ANNOTATIONS, 5);
+        midAnnotations = numAnnotations / 2;
         uniform = new Uniform(0, 1, 0);
     }
 }

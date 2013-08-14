@@ -17,7 +17,7 @@ import java.util.ArrayList;
  *
  * @author kramachandran
  */
-public class FastStochasticKroneckerMapper extends StochasticKroneckerBaseMapper<FastKroneckerInputSplit, NullWritable, LongWritable, FaunusVertex> {
+public class FastStochasticKroneckerMapper extends BaseMapper<FastKroneckerInputSplit, NullWritable, LongWritable, FaunusVertex> {
 
     public ArrayList<ProbabilityAndPair> cellProbabilityVector = new ArrayList<ProbabilityAndPair>();
     public LongWritable nodeId = new LongWritable();

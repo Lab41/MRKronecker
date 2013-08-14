@@ -15,7 +15,7 @@ public class BaseDriverTest {
     
     @Test
     public void testParseArgs() throws Exception {
-        String testArgs = "/blah/blah 2 0.0 0.1 0.2 0.3";
+        String testArgs = "/blah/blah 10 2 0.0 0.1 0.2 0.3";
 
         String[] args = testArgs.split(" ");
         BaseDriver driver = new EdgeCreationDriver();
@@ -25,6 +25,7 @@ public class BaseDriverTest {
         assertEquals(driver.n, 2);
         assertEquals(driver.outputPath.toString(), "/blah/blah");
         assertEquals(driver.initiator,"0.0, 0.1, 0.2, 0.3" );
+        assertEquals(driver.numAnnotations, 10);
     }
 
     @Test

@@ -5,8 +5,8 @@ import com.thinkaurelius.faunus.FaunusEdge;
 import com.thinkaurelius.faunus.FaunusVertex;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.Mapper;
-
 import java.io.IOException;
+import org.apache.hadoop.io.LongWritable;
 
 /**
  * The base mapper class for the Stochastic Kronecker graph generator, storing
@@ -15,7 +15,7 @@ import java.io.IOException;
  * 
  * @author kramachandran
  */
-public abstract class StochasticKroneckerBaseMapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends Mapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
+public abstract class BaseMapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends Mapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 
     protected int n = 0;   // Where 2^n is the size of the graph.
     protected Uniform uniform = null;
@@ -23,8 +23,7 @@ public abstract class StochasticKroneckerBaseMapper<KEYIN, VALUEIN, KEYOUT, VALU
     protected double[][] probabilityMatrix = null;
     protected FaunusVertex faunusVertex = new FaunusVertex();
     protected FaunusEdge faunusEdge = new FaunusEdge();
-
-    org.apache.hadoop.io.LongWritable vertexId = new org.apache.hadoop.io.LongWritable();
+    LongWritable vertexId = new LongWritable();
 
     protected FaunusVertex createVertex(long u) {
         return faunusVertex.reuse(u);

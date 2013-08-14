@@ -50,6 +50,8 @@ public class VertexCreationDriver extends BaseDriver implements Tool {
         job.getConfiguration().set(Constants.PROBABILITY_MATRIX, initiator);
         job.getConfiguration().set(Constants.N, Integer.toString(n));
         job.getConfiguration().set(Constants.BLOCK_SIZE, Long.toString(1 << 20));
+        job.getConfiguration().setInt(Constants.NUM_ANNOTATIONS, numAnnotations);
+        
         return job;
     }
     
