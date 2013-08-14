@@ -12,4 +12,5 @@ public class Constants {
 
     //the block size should be a power of 2- it controls how many nodes are sent to each mapper.
     public static final String BLOCK_SIZE = "kronecker.block_size";
+    public static final String NUM_ANNOTATIONS = "kronecker.num_annotations";
 }

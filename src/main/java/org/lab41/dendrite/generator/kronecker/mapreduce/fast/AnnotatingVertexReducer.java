@@ -3,10 +3,9 @@ package org.lab41.dendrite.generator.kronecker.mapreduce.fast;
 import com.thinkaurelius.faunus.FaunusVertex;
 import java.io.IOException;
 import java.util.UUID;
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.mapreduce.Reducer;
+import org.lab41.dendrite.generator.kronecker.mapreduce.AnnotatingBaseReducer;
 
 /**
  * Reducer class that operates on LongWritable-FaunusVertex pairs,
@@ -15,31 +14,13 @@ import org.apache.hadoop.mapreduce.Reducer;
  * 
  * @author ndesai
  */
-public class AnnotatingVertexReducer extends Reducer<LongWritable, FaunusVertex, NullWritable, FaunusVertex> {
+public class AnnotatingVertexReducer extends AnnotatingBaseReducer<LongWritable, FaunusVertex, NullWritable, FaunusVertex> {
     private FaunusVertex faunusVertex = new FaunusVertex();
-    private static final int NUM_PROPERTIES = 10;
     
-    /**
-     * Annotates the given FaunusVertex with a random UUID, random name,
-     * ten random floats, and ten random strings.
-     * @param vertex 
-     */
-    protected void annotate(FaunusVertex vertex) {
-        vertex.setProperty("uuid", UUID.randomUUID().toString());
-        vertex.setProperty("name", UUID.randomUUID().toString());
-        //TODO: Change the number and size of variables to be configurable.
-        //Perhaps based on some configuration or XML file?
-
-        //Add a bunch of longs
-        for (int i = 0; i < NUM_PROPERTIES; i++) {
-            //TODO: change to the CERN random generator.. much faster
-            vertex.setProperty("randLong" + Integer.toString(i), Math.random());
-        }
-
-        //Add a bunch of random strings
-        for (int i = 0; i < NUM_PROPERTIES; i++) {
-            vertex.setProperty("randString" + Integer.toString(i), RandomStringUtils.randomAlphanumeric((int) Math.floor(Math.random() * 150)));
-        }
+    protected void annotate(FaunusVertex element) {
+        element.setProperty("uuid", UUID.randomUUID().toString());
+        element.setProperty("name", UUID.randomUUID().toString());
+        super.annotate(element);
     }
     
     /**
