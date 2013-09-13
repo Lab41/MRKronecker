@@ -8,6 +8,14 @@ import org.apache.hadoop.mapreduce.Job;
 import java.io.IOException;
 
 /**
+ * Base class for any classes that drive the generation of elements of a
+ * stochastic Kronecker graph from a 2x2 initiator matrix.
+ * Subclasses of this class will take six command-line
+ * arguments - an output path, the number of iterations (must be less
+ * than 64), and the four elements of the initiator matrix.
+ * From this it will generate a stochastic Kronecker graph with
+ * 2^n nodes, where n is the number of iterations specified.
+ * 
  * @author kramachandran
  */
 public abstract class BaseDriver extends Configured {

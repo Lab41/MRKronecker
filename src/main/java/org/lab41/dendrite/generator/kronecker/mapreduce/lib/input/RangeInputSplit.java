@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.lab41.dendrite.generator.kronecker.mapreduce.lib.input;
 
 import java.io.DataInput;
@@ -11,7 +7,9 @@ import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.InputSplit;
 
 /**
- *
+ * An input split representing a range of vertices to be placed in the graph;
+ * a wrapper around a pair of long values.
+ * 
  * @author ndesai
  */
 public class RangeInputSplit extends InputSplit implements Writable {

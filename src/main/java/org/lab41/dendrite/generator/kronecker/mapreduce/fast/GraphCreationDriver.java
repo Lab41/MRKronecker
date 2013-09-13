@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.lab41.dendrite.generator.kronecker.mapreduce.fast;
 
 import com.thinkaurelius.faunus.FaunusVertex;
@@ -19,10 +15,16 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.lab41.dendrite.generator.kronecker.mapreduce.Constants;
 
 /**
- *
+ * Driver class for generating a stochastic Kronecker graph from the outputs
+ * of {@link EdgeCreationDriver} and {@link VertexCreationDriver}.
+ * It takes as input a SequenceFile listing single edges
+ * and SequenceFile listing vertices and combines them to form
+ * a representation of a
+ * single stochastic Kronecker graph as a collection of FaunusVertexes
+ * with multiple edges coming off them.
+ * 
  * @author ndesai
  */
 public class GraphCreationDriver extends Configured implements Tool {

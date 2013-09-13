@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.lab41.dendrite.generator.kronecker.mapreduce.fast;
 
 import com.thinkaurelius.faunus.FaunusVertex;
@@ -12,7 +8,12 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
 /**
+ * Reducer class that operates on NodeTuple-NullWritable pairs (representing
+ * instances of an edge in a stochastic Kronecker graph), generating
+ * a LongWritable-FaunusVertex pair (represents that edge's tail, with
+ * the edge coming out of it).
  * 
+ * @author ndesai
  */
 public class EdgeReducer extends Reducer<NodeTuple, NullWritable, LongWritable, FaunusVertex> {
     private LongWritable nodeID = new LongWritable();

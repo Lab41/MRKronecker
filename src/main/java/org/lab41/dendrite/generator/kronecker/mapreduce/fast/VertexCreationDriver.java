@@ -20,7 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Driver class that runs a map-only job to create all 2^n vertices of a
+ * stochastic Kronecker graph.
+ * 
  * @author ndesai
  */
 public class VertexCreationDriver extends BaseDriver implements Tool {

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.lab41.dendrite.generator.kronecker.mapreduce.lib.input;
 
 import java.io.IOException;
@@ -13,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Reads RangeInputSplit-NullWritable key-value pairs from an input split.
  *
  * @author ndesai
  */

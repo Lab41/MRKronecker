@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.lab41.dendrite.generator.kronecker.mapreduce.fast;
 
 import java.io.IOException;
@@ -13,7 +9,11 @@ import org.lab41.dendrite.generator.kronecker.mapreduce.StochasticKroneckerBaseM
 import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.QuotaInputSplit;
 
 /**
- *
+ * Mapper class that operates on 
+ * QuotaInputSplit-NullWritable pairs and outputs NodeTuple-NullWritable pairs 
+ * representing edges in a stochastic Kronecker graph.
+ * Leverages the Kron-Gen algorithm.
+ * 
  * @author ndesai
  */
 public class EdgeCreationMapper extends StochasticKroneckerBaseMapper<QuotaInputSplit, NullWritable, NodeTuple, NullWritable> {
@@ -30,7 +30,6 @@ public class EdgeCreationMapper extends StochasticKroneckerBaseMapper<QuotaInput
         //TODO: remove assumption of 2x2 initiator matrix
         this.dimNodes = 1 << this.n;
     }
-    
     
     /**
      * Class for elements of cellProbabilityVector. Triple storing row, column,

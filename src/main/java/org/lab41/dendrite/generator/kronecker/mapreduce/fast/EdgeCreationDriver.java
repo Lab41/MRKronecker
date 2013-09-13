@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.lab41.dendrite.generator.kronecker.mapreduce.fast;
 
 import com.thinkaurelius.faunus.FaunusVertex;
@@ -21,7 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Driver class for the generation of edges of a stochastic Kronecker graph
+ * via the Kron-Gen algorithm.
+ * 
  * @author ndesai
  */
 public class EdgeCreationDriver extends BaseDriver implements Tool {
