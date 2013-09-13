@@ -11,6 +11,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.LongSequenceInputFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a driver for a map-only job that generates a stochastic kronecker graph.
@@ -27,25 +29,27 @@ import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.LongSequenceIn
  * <p/>
  * The arguments should be provided as follows :
  * <p/>
- * StochasticKorneckerDriver outputPath n t_11 t_12 t_21 t_31
+ * StochasticKroneckerDriver outputPath n t_11 t_12 t_21 t_31
  * <p/>
  * This version of the driver uses the {@link LongSequenceInputFormat} as the input format, and the
  * {@link FileOutputFormat} as the output format.
  *
  * @author kramachandran
  */
-public class StochasticKorneckerDriver extends Configured implements Tool {
+public class StochasticKroneckerDriver extends Configured implements Tool {
     Path outputPath;
     String initiator;
     int n;
+    Logger logger = LoggerFactory.getLogger(StochasticKroneckerDriver.class);
 
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new StochasticKorneckerDriver(), args);
+        int exitCode = ToolRunner.run(new StochasticKroneckerDriver(), args);
 
         System.exit(exitCode);
     }
 
     protected boolean parseArgs(String[] args) {
+
         if (args.length != 6) {
             return false;
 
@@ -81,10 +85,10 @@ public class StochasticKorneckerDriver extends Configured implements Tool {
 
             /** configure Job **/
             Job job = new Job(getConf(), "DataIngest Example");
-            job.setJarByClass(StochasticKorneckerDriver.class);
+            job.setJarByClass(StochasticKroneckerDriver.class);
 
             /** Set the Mapper & Reducer**/
-            job.setMapperClass(StochasticKorneckerGeneratorMapper.class);
+            job.setMapperClass(StochasticKroneckerGeneratorMapper.class);
             job.setReducerClass(EdgeListToFaunusAnnotatingReducer.class);
 
             /** Configure Input Format to be our custom InputFormat **/

@@ -30,11 +30,11 @@ import java.io.IOException;
  *
  * @author kramachandran
  */
-public class StochasticKorneckerGeneratorMapper extends Mapper<LongWritable, NullWritable, LongWritable, LongWritable> {
+public class StochasticKroneckerGeneratorMapper extends Mapper<LongWritable, NullWritable, LongWritable, LongWritable> {
     private Configuration configuration ;
     private int n;   // Where 2^n is the size of the graph.
     private float[][] probablity_matrix;
-   private Logger logger = LoggerFactory.getLogger(StochasticKorneckerGeneratorMapper.class);
+   private Logger logger = LoggerFactory.getLogger(StochasticKroneckerGeneratorMapper.class);
 
     /**
      * Expects the probablity matrix as a comma seperated string " t11, t12, t21, t22"

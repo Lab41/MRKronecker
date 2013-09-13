@@ -7,19 +7,20 @@ import static junit.framework.Assert.*;
 /**
  * @author kramachandran
  */
-public class StochasticKorneckerDriverTest {
+public class StochasticKroneckerDriverTest {
 
     @Test
     public void testParseArgs() throws Exception {
-        String testArgs = " /blah/blah 2 0.0 0.1 0.2 0.3 0.4";
+        String testArgs = "/blah/blah 2 0.0 0.1 0.2 0.3";
+
         String[] args = testArgs.split(" ");
-        StochasticKorneckerDriver driver = new StochasticKorneckerDriver();
+        StochasticKroneckerDriver driver = new StochasticKroneckerDriver();
 
         assertEquals(driver.parseArgs(args), true);
 
         assertEquals(driver.n, 2);
-        assertEquals(driver.outputPath, "/blah/blah");
-        assertEquals(driver.initiator,"0.0 0.1 0.2 0.3 0.4" );
+        assertEquals(driver.outputPath.toString(), "/blah/blah");
+        assertEquals(driver.initiator,"0.0, 0.1, 0.2, 0.3" );
 
 
     }
@@ -28,7 +29,7 @@ public class StochasticKorneckerDriverTest {
     public void testFailParseArgs() throws Exception {
         String badArgs = " /blah/blah 2 0.0 0.1 0.2 0.3";
         String[] args = badArgs.split(" ");
-        StochasticKorneckerDriver driver = new StochasticKorneckerDriver();
+        StochasticKroneckerDriver driver = new StochasticKroneckerDriver();
         assertEquals(driver.parseArgs(args), false);
 
 

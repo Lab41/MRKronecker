@@ -17,13 +17,13 @@ import java.util.List;
 /**
  * @author kramachandran
  */
-public class StochasticKorneckerGeneratorMapperTest {
+public class StochasticKroneckerGeneratorMapperTest {
     Mapper mapper;
 
 
     @Before
     public void setUp() throws Exception {
-        mapper = new StochasticKorneckerGeneratorMapper();
+        mapper = new StochasticKroneckerGeneratorMapper();
 
 
 
@@ -37,8 +37,8 @@ public class StochasticKorneckerGeneratorMapperTest {
 
     @Test
     public void testParseProbabilityMartix() throws Exception {
-        StochasticKorneckerGeneratorMapper stochasticKorneckerGeneratorMapper = new StochasticKorneckerGeneratorMapper();
-        float[][] probabilityMatrix = stochasticKorneckerGeneratorMapper.parseProbabilityMartix("1.1, 1.2, 2.1, 2.2");
+        StochasticKroneckerGeneratorMapper stochasticKroneckerGeneratorMapper = new StochasticKroneckerGeneratorMapper();
+        float[][] probabilityMatrix = stochasticKroneckerGeneratorMapper.parseProbabilityMartix("1.1, 1.2, 2.1, 2.2");
 
         assertEquals(probabilityMatrix[0][0], 1.1f);
         assertEquals(probabilityMatrix[0][1], 1.2f);
