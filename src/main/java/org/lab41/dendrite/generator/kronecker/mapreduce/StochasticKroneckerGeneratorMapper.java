@@ -1,6 +1,12 @@
 package org.lab41.dendrite.generator.kronecker.mapreduce;
 
 import cern.jet.random.Binomial;
+import cern.jet.random.Uniform;
+import com.thinkaurelius.faunus.FaunusEdge;
+import com.thinkaurelius.faunus.FaunusVertex;
+import com.tinkerpop.blueprints.Direction;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.math.random.UniformRandomGenerator;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
@@ -10,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.UUID;
 
 
 /**
@@ -30,41 +37,46 @@ import java.io.IOException;
  *
  * @author kramachandran
  */
-public class StochasticKroneckerGeneratorMapper extends Mapper<LongWritable, NullWritable, LongWritable, LongWritable> {
+public class StochasticKroneckerGeneratorMapper extends Mapper<LongWritable, NullWritable, NullWritable, FaunusVertex> {
     private Configuration configuration ;
-    private int n;   // Where 2^n is the size of the graph.
-    private float[][] probablity_matrix;
+    private int n = 0;   // Where 2^n is the size of the graph.
+    private double[][] probablity_matrix = null;
    private Logger logger = LoggerFactory.getLogger(StochasticKroneckerGeneratorMapper.class);
+    private Uniform uniform = null;
 
     /**
      * Expects the probablity matrix as a comma seperated string " t11, t12, t21, t22"
      * @param strProbabilityMartix
      * @return
      */
-    protected float[][] parseProbabilityMartix(String strProbabilityMartix)
+    protected double[][] parseProbabilityMartix(String strProbabilityMartix)
     {
         String[] splitMatrix = strProbabilityMartix.split(",");
-        float[][] probabilityMatrix = new float[2][2];
+        double[][] probabilityMatrix = new double[2][2];
 
         if(splitMatrix.length == 4)
         {
-            for(int i=0, j=0; i < 4; i++)
-            {
-                float value = Float.parseFloat( splitMatrix[i]);
-                probabilityMatrix[j][i % 2] = value;
+            probabilityMatrix[0][0] = Double.parseDouble(splitMatrix[0]);
+            probabilityMatrix[0][1] = Double.parseDouble(splitMatrix[1]);
+            probabilityMatrix[1][0] = Double.parseDouble(splitMatrix[2]);
+            probabilityMatrix[1][1] = Double.parseDouble(splitMatrix[3]);
 
-                //increment j when i rolls past 1
-                if( i % 2 == 1)
-                   j++;
-            }
         }
         else
         {
             throw new RuntimeException("the probablity matrix is not valid");
         }
 
-        probablity_matrix = probabilityMatrix;
+       // probablity_matrix = probabilityMatrix;
         return probabilityMatrix;
+    }
+
+    public double[][] getProbablity_matrix() {
+        return probablity_matrix;
+    }
+
+    public void setProbablity_matrix(double[][] probablity_matrix) {
+        this.probablity_matrix = probablity_matrix;
     }
 
     @Override
@@ -74,50 +86,133 @@ public class StochasticKroneckerGeneratorMapper extends Mapper<LongWritable, Nul
         n = Integer.parseInt(N);
         String strProbMatrix = configuration.get(Constants.PROBABLITY_MATRIX);
         probablity_matrix = parseProbabilityMartix(strProbMatrix)  ;
+        uniform = new Uniform(0, 1, 0);
 
+    }
+
+
+    protected void annotate(FaunusVertex vertex)
+    {
+        vertex.setProperty("uuid", UUID.randomUUID().toString());
+        vertex.setProperty("name", UUID.randomUUID().toString());
+        //TODO: Change the number and size of variables to be configurable.
+        //Perhaps based on some configuration or XML file?
+
+        //Add a bunch of longs
+        for(int i = 0; i < 10; i++)
+        {
+            //TODO: change to the CERN random generator.. much faster
+            vertex.setProperty("randLong" + Integer.toString(i), Math.random());
+        }
+
+        //Add a bunch of random strings
+        for(int i = 0; i < 10; i++)
+        {
+            vertex.setProperty("randString" + Integer.toString(i) , RandomStringUtils.randomAlphanumeric((int) Math.floor(Math.random() * 150)));
+        }
+
+
+    }
+
+    protected FaunusVertex createVertex (long u)
+    {
+        //Create a new vertex
+        FaunusVertex outVertex = new FaunusVertex(u);
+        return outVertex;
+    }
+
+    protected FaunusEdge createEdge(long srcVertex, long destVertex)
+    {
+        FaunusEdge faunusEdge = new FaunusEdge(srcVertex, destVertex, "RELATIONSHIP");
+        return faunusEdge;
     }
 
     @Override
     protected void map(LongWritable key, NullWritable value, Context context) throws IOException, InterruptedException {
         //Total number of nodes.
         long dimNodes;
+        long edgesWritten= 0;
 
         if (n < 64)
         {
          dimNodes= (long) Math.pow(2,n);       // 2 ^ n
-         logger.info("DimNodes : " + dimNodes);
         }
         else
          throw new RuntimeException("N is too large! Must be less than 64");
 
         long u = key.get();
 
-        //Note the loops are one based here. We are starting the adjacency matrix from an index of 1,1
+        //create the vertex
+        FaunusVertex vertex = createVertex(u);
 
-        for(int v = 1 ; v <= dimNodes; v++)
+        //annotate the vertex
+        annotate(vertex);
+
+        //Note the loops are one based here. We are starting the adjacency matrix from an index of 1,1
+        for(long v = 1 ; v <= dimNodes; v++)
         {
             if( u != v)
             {
-                float p_uv = calculateProbabilityOfEdgeUV(u, v);
-                int writeEdge = Binomial.staticNextInt(1, p_uv);
-                if(writeEdge == 1)
+                //Note you do get different values if you use the uniform random generator
+                //versus the Binonial genrator. No idea which is better.
+                //TODO: write version of this that uses bionmial?
+                double threshHold = uniform.nextDoubleFromTo(0,1);
+                boolean placeEdge = placeEdge(u, v, n, threshHold);
+
+                if(placeEdge)
                 {
-                    context.write(new LongWritable(u), new LongWritable(v));
-                    context.getCounter("Graph Stats", "EdgesWritten").increment(1l);
-                    logger.info(String.format("Writing Edge: %1$d, %2$d", u, v ));
+                    FaunusEdge faunusEdge = createEdge(u, v);
+                    vertex.addEdge(Direction.OUT, faunusEdge);
+                    edgesWritten++;
                 }
-                context.getCounter("Graph Stats", "Edges").increment(1l);
+                //context.getCounter("Graph Stats", "Edges Without Self Loops").increment(1l);
+
             }
+            //context.getCounter("Graph Stats", "Edges").increment(1l);
         }
+        context.write(NullWritable.get(), vertex);
         context.getCounter("Completed", "Nodes").increment(1l);
+        context.getCounter("Completed", "EdgesWritten").increment(edgesWritten);
+        context.progress();
     }
 
-    protected float calculateProbabilityOfEdgeUV(long u, long v) {
-        float p_uv = 1; //probability
+
+    /**
+     *
+     * @param u - row coordinate
+     * @param v - column coordinate
+     * @param n - N^n number of nodes. (where dim(InitMatrix) = N x N)
+     * @return
+     */
+    protected boolean placeEdge(long u, long v, int n, double threshold) {
+        double p_uv = 1d; //probability
         for (int i = 0 ; i < n; i++)
         {
-            float probability = getProbabilityForIteration(u, v, i, probablity_matrix);
+            double probability = getProbabilityForIteration(u, v, i, probablity_matrix);
             p_uv = probability * p_uv;
+            if(threshold > p_uv)
+            {
+                return false;
+            }
+
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param u - row coordinate
+     * @param v - column coordinate
+     * @param n - N^n number of nodes. (where dim(InitMatrix) = N x N)
+     * @return
+     */
+    protected double calculateProbabilityOfEdgeUV(long u, long v, int n) {
+        double p_uv = 1d; //probability
+        for (int i = 0 ; i < n; i++)
+        {
+            double probability = getProbabilityForIteration(u, v, i, probablity_matrix);
+            p_uv = probability * p_uv;
+
         }
         return p_uv;
     }
@@ -130,18 +225,15 @@ public class StochasticKroneckerGeneratorMapper extends Mapper<LongWritable, Nul
      * @param i - iteration step.
      * @return
      */
-    protected float getProbabilityForIteration(long u, long v, int i, float[][] probaility_matrix) {
+    protected double getProbabilityForIteration(long u, long v, int i, double[][] probaility_matrix) {
+        //TODO Remove assumption of 2x2 generator matrix;
         long n_to_i = (long) Math.pow(2,i);
 
         //calculating which of the probabilities to use in this step of the product
         //by figuring out which of the entries in the initiator matrix should be used.
 
-        int prob_row = (int) (Math.floor((u-1)/ n_to_i) % 2);
-        int prob_column = (int) (Math.floor((v-1)/n_to_i) % 2);
-
-        logger.info(String.format("for (%1$d, %2$d) iteration %3$d using prob[%4$d, %5$d]",
-                u, v, i, prob_row, prob_column));
-
+        int prob_row = (int) (Math.floor((u-1)/ n_to_i) % 2)  ;
+        int prob_column = (int) (Math.floor((v-1)/n_to_i) % 2)  ;
         return probaility_matrix[prob_row][prob_column];
     }
 }

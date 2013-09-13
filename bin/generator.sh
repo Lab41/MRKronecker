@@ -1,6 +1,6 @@
 #!/bin/sh
-set -e
-cd `dirname $0`
+#set -e
+#cd `dirname $0`
 
 output=$1
 
@@ -10,7 +10,7 @@ if [[ "$1" == "" ]]; then
 fi
 
 
-hadoop fs -rm -r -f "$3*" || :
+hadoop fs -rm -r -f "$1*" || :
 
 if [[ "$DEBUG_ENABLED" -eq 1 ]]; then
 	HADOOP_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044"

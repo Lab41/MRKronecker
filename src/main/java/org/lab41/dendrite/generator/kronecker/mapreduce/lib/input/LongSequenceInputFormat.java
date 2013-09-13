@@ -1,8 +1,10 @@
 package org.lab41.dendrite.generator.kronecker.mapreduce.lib.input;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.*;
+import org.lab41.dendrite.generator.kronecker.mapreduce.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,20 +20,18 @@ import java.util.List;
  * and the return value of that generator function is emited as key.
  * <p/>
  * By default this function will evenly divide the range [start,end] between the number of mappers set in
- * the JobConf using {@link MRJobConfig.NUM_MAPS}.  If this value is not set then we default to 1.
+ * the JobConf using MRJobConfig.NUM_MAPS.  If this value is not set then we default to 1.
  *
  * @author kramachandran
  */
 public class LongSequenceInputFormat extends InputFormat<LongWritable, NullWritable> {
     Long startSequence;
     Long endSequence;
-    LongSequenceGenerator generator;
+
     Logger log = LoggerFactory.getLogger(LongSequenceInputFormat.class);
 
-    public LongSequenceInputFormat(Long startSequence, Long endSequence, LongSequenceGenerator generator) {
-        this.startSequence = startSequence;
-        this.endSequence = endSequence;
-        this.generator = generator;
+    public LongSequenceInputFormat() {
+        super();
     }
 
     /**
@@ -40,18 +40,38 @@ public class LongSequenceInputFormat extends InputFormat<LongWritable, NullWrita
 
     @Override
     public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
+        Configuration conf = context.getConfiguration();
+        long chunksize;
+        //TODO - change this to pull a start number, end number, and generator from conf.        function from the configuration
+        int n = Integer.parseInt(conf.get(Constants.N));
+        startSequence = 1l;
+        endSequence = (long) Math.pow(2, n);
+
         log.info("Interval : " + startSequence + "," + endSequence);
 
         List<InputSplit> splits = new ArrayList<InputSplit>();
         Integer chunks = context.getConfiguration().getInt(MRJobConfig.NUM_MAPS, 1);
 
         //TODO: add error checking to make sure startSequence is less than endSequence
-        long chunksize = (endSequence - startSequence + 1) / chunks;
+        if(chunks != 1 )
+        {
+         chunksize = (endSequence - startSequence + 1) / chunks;
+        }
+        else
+        {
+            //We'll do 64,000  nodes to a mapper -- if the mappers produce less that
+            //64M of data we probably have to up this.
+            chunksize =(long) Math.pow(2, 14);    //approx 16k
+        }
 
         for (long i = startSequence; i < endSequence; i += chunksize) {
 
             long startInterval = i;
+
             long endInterval = i + chunksize - 1;
+
+            if(endInterval > endSequence)
+                endInterval = endSequence;
 
             log.info("adding a split for :" + i + "," + endInterval);
             LongSequenceInputSplit split = new LongSequenceInputSplit(startInterval, endInterval);
@@ -64,7 +84,9 @@ public class LongSequenceInputFormat extends InputFormat<LongWritable, NullWrita
 
     @Override
     public RecordReader createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
-        LongSequenceRecordReader recordReader = new LongSequenceRecordReader(generator);
+        log.info("creating record Reader");
+        LongSequenceRecordReader recordReader = new LongSequenceRecordReader();
+        recordReader.initialize((LongSequenceInputSplit) split, context);
         return recordReader;
 
     }

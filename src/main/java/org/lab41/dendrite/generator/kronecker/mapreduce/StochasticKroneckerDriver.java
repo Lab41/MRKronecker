@@ -6,8 +6,13 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
+
+
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.MRJobConfig;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.LongSequenceInputFormat;
@@ -61,6 +66,10 @@ public class StochasticKroneckerDriver extends Configured implements Tool {
 
             //read n
             n = Integer.parseInt(args[1]);
+            if( n > 63)
+            {
+                return false;
+            }
 
             //read the initator matrix
             String t_11 = args[2];
@@ -81,26 +90,30 @@ public class StochasticKroneckerDriver extends Configured implements Tool {
         if(parseArgs(args))
         {
 
-            Configuration conf = getConf();
+            Configuration conf = new Configuration();
+
 
             /** configure Job **/
-            Job job = new Job(getConf(), "DataIngest Example");
+            Job job = new Job(getConf());
+            job.setJobName("StochasticKronecker");
             job.setJarByClass(StochasticKroneckerDriver.class);
 
             /** Set the Mapper & Reducer**/
             job.setMapperClass(StochasticKroneckerGeneratorMapper.class);
-            job.setReducerClass(EdgeListToFaunusAnnotatingReducer.class);
+            //job.setReducerClass(EdgeListToFaunusAnnotatingReducer.class);
+            job.setNumReduceTasks(0);
 
-            /** Configure Input Format to be our custom InputFormat **/
+            /* Configure Input Format to be our custom InputFormat */
             job.setInputFormatClass(LongSequenceInputFormat.class);
-            job.setOutputFormatClass(FileOutputFormat.class);
+            job.setOutputFormatClass(SequenceFileOutputFormat.class);
+//
             FileOutputFormat.setOutputPath(job, outputPath);
 
-            /** Configure Map Output **/
-            job.setMapOutputKeyClass(LongWritable.class);
-            job.setMapOutputValueClass(LongWritable.class);
+            /* Configure Map Output */
+            job.setMapOutputKeyClass(NullWritable.class);
+            job.setMapOutputValueClass(FaunusVertex.class);
 
-            /** Configure job (Reducer) output **/
+            /* Configure job (Reducer) output */
             job.setOutputKeyClass(NullWritable.class);
             job.setOutputValueClass(FaunusVertex.class);
 
@@ -115,7 +128,8 @@ public class StochasticKroneckerDriver extends Configured implements Tool {
         }
         else
         {
-            System.out.println("Usage : outputPath n t_11 t_12 t_21 t_31 ");
+            System.out.println("Usage : outputPath n t_11 t_12 t_21 t_31 \n" +
+                    "               n must be less than 64");
             return 1;
         }
 

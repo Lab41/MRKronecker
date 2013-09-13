@@ -15,7 +15,10 @@ import java.io.IOException;
 public class LongSequenceInputSplit extends InputSplit implements Writable{
     long startInterval;
     long endInterval;
-                              
+
+    public LongSequenceInputSplit() {
+    }
+
     public LongSequenceInputSplit(long start, long end)
     {
         startInterval = start; 
