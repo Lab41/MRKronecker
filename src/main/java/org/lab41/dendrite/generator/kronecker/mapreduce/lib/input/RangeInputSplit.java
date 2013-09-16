@@ -14,14 +14,14 @@ import org.apache.hadoop.mapreduce.InputSplit;
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerRangeInputSplit extends InputSplit implements Writable {
+public class RangeInputSplit extends InputSplit implements Writable {
     long start;
     long end;
 
-    public FastStochasticKroneckerRangeInputSplit() {
+    public RangeInputSplit() {
     }
     
-    public FastStochasticKroneckerRangeInputSplit(long start, long end) {
+    public RangeInputSplit(long start, long end) {
         this.start = start;
         this.end = end;
     }

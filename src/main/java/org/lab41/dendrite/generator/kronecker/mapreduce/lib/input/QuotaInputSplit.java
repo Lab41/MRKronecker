@@ -14,13 +14,13 @@ import org.apache.hadoop.mapreduce.InputSplit;
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerQuotaInputSplit extends InputSplit implements Writable {
+public class QuotaInputSplit extends InputSplit implements Writable {
     long quota;
 
-    public FastStochasticKroneckerQuotaInputSplit() {
+    public QuotaInputSplit() {
     }
     
-    public FastStochasticKroneckerQuotaInputSplit(long quota) {
+    public QuotaInputSplit(long quota) {
         this.quota = quota;
     }
     

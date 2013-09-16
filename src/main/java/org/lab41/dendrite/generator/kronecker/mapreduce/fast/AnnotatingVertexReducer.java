@@ -16,7 +16,7 @@ import org.apache.hadoop.mapreduce.Reducer;
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerAnnotatingVertexReducer extends Reducer<LongWritable, FaunusVertex, NullWritable, FaunusVertex> {
+public class AnnotatingVertexReducer extends Reducer<LongWritable, FaunusVertex, NullWritable, FaunusVertex> {
     private FaunusVertex faunusVertex = new FaunusVertex();
     
     protected void annotate(FaunusVertex vertex) {

@@ -10,13 +10,13 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.lab41.dendrite.generator.kronecker.mapreduce.InitiatorMatrixUtils;
 import org.lab41.dendrite.generator.kronecker.mapreduce.StochasticKroneckerBaseMapper;
-import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.FastStochasticKroneckerQuotaInputSplit;
+import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.QuotaInputSplit;
 
 /**
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerEdgeCreationMapper extends StochasticKroneckerBaseMapper<FastStochasticKroneckerQuotaInputSplit, NullWritable, NodeTuple, NullWritable> {
+public class EdgeCreationMapper extends StochasticKroneckerBaseMapper<QuotaInputSplit, NullWritable, NodeTuple, NullWritable> {
     ArrayList<ProbabilityAndPair> cellProbabilityVector = new ArrayList<ProbabilityAndPair>();
     LongWritable nodeId = new LongWritable();
     NodeTuple edge = new NodeTuple();
@@ -117,18 +117,14 @@ public class FastStochasticKroneckerEdgeCreationMapper extends StochasticKroneck
             col += probabilityAndPair.col * range;
         }
         
-        edge.set(row, col);
-        
-        //faunusVertex = createVertex(row);
-        //faunusEdge = createEdge(row, col);
-        //faunusVertex.addEdge(Direction.OUT, faunusEdge);
+        edge.set(row, col);        
         context.write(edge, NullWritable.get());
 
         context.getCounter("Completed", "Edges Written").increment(1L);
     }
 
     @Override
-    protected void map(FastStochasticKroneckerQuotaInputSplit key, NullWritable value, Context context) throws IOException, InterruptedException {
+    protected void map(QuotaInputSplit key, NullWritable value, Context context) throws IOException, InterruptedException {
         for(int i = 0; i < key.getQuota(); i++) {
             placeEdge(context);
         }

@@ -13,7 +13,7 @@ import org.apache.hadoop.mapreduce.Reducer;
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerVertexCombiner extends Reducer<LongWritable, FaunusVertex, LongWritable, FaunusVertex> {
+public class VertexCombiner extends Reducer<LongWritable, FaunusVertex, LongWritable, FaunusVertex> {
     private FaunusVertex faunusVertex = new FaunusVertex();
     
     @Override

@@ -14,7 +14,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 /**
  * 
  */
-public class FastStochasticKroneckerEdgeReducer extends Reducer<NodeTuple, NullWritable, LongWritable, FaunusVertex> {
+public class EdgeReducer extends Reducer<NodeTuple, NullWritable, LongWritable, FaunusVertex> {
     private LongWritable nodeID = new LongWritable();
     private FaunusVertex faunusVertex = new FaunusVertex();
  

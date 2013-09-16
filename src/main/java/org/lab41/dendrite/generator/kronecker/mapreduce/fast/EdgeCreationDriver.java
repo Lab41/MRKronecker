@@ -8,6 +8,7 @@ import com.thinkaurelius.faunus.FaunusVertex;
 import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
@@ -15,7 +16,7 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.lab41.dendrite.generator.kronecker.mapreduce.BaseDriver;
 import org.lab41.dendrite.generator.kronecker.mapreduce.Constants;
-import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.FastStochasticKroneckerRangeInputFormat;
+import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.QuotaInputFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,28 +24,31 @@ import org.slf4j.LoggerFactory;
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerVertexCreationDriver extends BaseDriver implements Tool {
-    Logger logger = LoggerFactory.getLogger(FastStochasticKroneckerVertexCreationDriver.class);
+public class EdgeCreationDriver extends BaseDriver implements Tool {
+    Logger logger = LoggerFactory.getLogger(EdgeCreationDriver.class);
 
     @Override
     public Job configureGeneratorJob(Configuration conf) throws IOException {
         Job job = new Job(getConf());
-        job.setJobName("FastStochasticKroneckerVertexCreation N=" + Integer.toString(n));
-        job.setJarByClass(FastStochasticKroneckerVertexCreationDriver.class);
+        job.setJobName("FastStochasticKroneckerEdgeCreation N=" + Integer.toString(n));
+        job.setJarByClass(EdgeCreationDriver.class);
 
-        job.setMapperClass(FastStochasticKroneckerVertexCreationMapper.class);        
-        job.setNumReduceTasks(0);
+        /** Set the Mapper & Reducer**/
+        job.setMapperClass(EdgeCreationMapper.class);
+        job.setCombinerClass(EdgeCombiner.class);
+        job.setReducerClass(EdgeReducer.class);
 
         /* Configure Input Format to be our custom InputFormat */
-        job.setInputFormatClass(FastStochasticKroneckerRangeInputFormat.class);
+        job.setInputFormatClass(QuotaInputFormat.class);
         job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
         FileOutputFormat.setOutputPath(job, outputPath);
 
         /* Configure Map Output */
-        job.setMapOutputKeyClass(LongWritable.class);
-        job.setMapOutputValueClass(FaunusVertex.class);
-        
+        job.setMapOutputKeyClass(NodeTuple.class);
+        job.setMapOutputValueClass(NullWritable.class);
+
+        /* Configure job (Reducer) output */
         job.setOutputKeyClass(LongWritable.class);
         job.setOutputValueClass(FaunusVertex.class);
 
@@ -54,9 +58,9 @@ public class FastStochasticKroneckerVertexCreationDriver extends BaseDriver impl
         job.getConfiguration().set(Constants.BLOCK_SIZE, Long.toString(1 << 20));
         return job;
     }
-    
+
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new FastStochasticKroneckerVertexCreationDriver(), args);
+        int exitCode = ToolRunner.run(new EdgeCreationDriver(), args);
 
         System.exit(exitCode);
     }

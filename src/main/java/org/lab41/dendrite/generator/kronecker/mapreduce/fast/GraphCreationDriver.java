@@ -25,7 +25,7 @@ import org.lab41.dendrite.generator.kronecker.mapreduce.Constants;
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerGraphCreationDriver extends Configured implements Tool {
+public class GraphCreationDriver extends Configured implements Tool {
     protected Path edgeInputPath;
     protected Path vertexInputPath;
     protected Path outputPath;
@@ -46,12 +46,12 @@ public class FastStochasticKroneckerGraphCreationDriver extends Configured imple
         Job job = new Job(getConf());
         job.setJobName("FastStochasticKroneckerGraphCreation Edge="+edgeInputPath.toString() + 
                        " Vertex="+vertexInputPath.toString());
-        job.setJarByClass(FastStochasticKroneckerGraphCreationDriver.class);
+        job.setJarByClass(GraphCreationDriver.class);
 
         /** Set the Mapper & Reducer**/
         job.setMapperClass(Mapper.class);
-        job.setCombinerClass(FastStochasticKroneckerVertexCombiner.class);
-        job.setReducerClass(FastStochasticKroneckerAnnotatingVertexReducer.class);
+        job.setCombinerClass(VertexCombiner.class);
+        job.setReducerClass(AnnotatingVertexReducer.class);
 
         /* Configure Input Format to be our custom InputFormat */
         job.setInputFormatClass(SequenceFileInputFormat.class);
@@ -89,7 +89,7 @@ public class FastStochasticKroneckerGraphCreationDriver extends Configured imple
     }
     
     public static void main(String[] args) throws Exception {
-        int exitCode = ToolRunner.run(new FastStochasticKroneckerGraphCreationDriver(), args);
+        int exitCode = ToolRunner.run(new GraphCreationDriver(), args);
 
         System.exit(exitCode);
     }

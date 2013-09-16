@@ -16,25 +16,25 @@ import org.slf4j.LoggerFactory;
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerRangeRecordReader extends RecordReader<FastStochasticKroneckerRangeInputSplit, NullWritable>{
-    private FastStochasticKroneckerRangeInputSplit inputSplit;
-    Logger logger = LoggerFactory.getLogger(FastStochasticKroneckerRangeRecordReader.class);
+public class QuotaRecordReader extends RecordReader<QuotaInputSplit, NullWritable>{
+    private QuotaInputSplit inputSplit;
+    Logger logger = LoggerFactory.getLogger(QuotaRecordReader.class);
     TaskAttemptContext context;
     boolean nextKey = true;
     
-    public FastStochasticKroneckerRangeRecordReader() {
+    public QuotaRecordReader() {
         super();
     }
 
     @Override
     public void initialize(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
-        this.inputSplit = (FastStochasticKroneckerRangeInputSplit) split;
+        this.inputSplit = (QuotaInputSplit) split;
         this.context = context;
 
         if(logger.isDebugEnabled())
         {
             String logmessage =
-                    String.format("QuotaRecordReader initialized for (%1$d,%2$d) ", inputSplit.getStart(), inputSplit.getEnd());
+                    String.format("QuotaRecordReader initialized for (%1$d) ", inputSplit.getQuota());
 
             logger.debug(logmessage);
         }
@@ -46,9 +46,9 @@ public class FastStochasticKroneckerRangeRecordReader extends RecordReader<FastS
     }
 
     @Override
-    public FastStochasticKroneckerRangeInputSplit getCurrentKey() throws IOException, InterruptedException {
+    public QuotaInputSplit getCurrentKey() throws IOException, InterruptedException {
         nextKey = false;
-        return (FastStochasticKroneckerRangeInputSplit) inputSplit;
+        return (QuotaInputSplit) inputSplit;
     }
 
     @Override

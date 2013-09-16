@@ -9,13 +9,13 @@ import java.io.IOException;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.lab41.dendrite.generator.kronecker.mapreduce.StochasticKroneckerBaseMapper;
-import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.FastStochasticKroneckerRangeInputSplit;
+import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.RangeInputSplit;
 
 /**
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerVertexCreationMapper extends StochasticKroneckerBaseMapper<FastStochasticKroneckerRangeInputSplit, NullWritable, LongWritable, FaunusVertex>{
+public class VertexCreationMapper extends StochasticKroneckerBaseMapper<RangeInputSplit, NullWritable, LongWritable, FaunusVertex>{
     private LongWritable nodeID = new LongWritable();
     protected long dimNodes = 0l;
     
@@ -26,7 +26,7 @@ public class FastStochasticKroneckerVertexCreationMapper extends StochasticKrone
     }
     
     @Override
-    protected void map(FastStochasticKroneckerRangeInputSplit key, NullWritable value, Context context) throws IOException, InterruptedException {
+    protected void map(RangeInputSplit key, NullWritable value, Context context) throws IOException, InterruptedException {
         for (long i = key.getStart(); i <= key.getEnd(); i++)
         {
             FaunusVertex node = createVertex(i);

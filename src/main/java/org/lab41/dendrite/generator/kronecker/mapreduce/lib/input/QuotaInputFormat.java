@@ -23,9 +23,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerQuotaInputFormat extends InputFormat<FastStochasticKroneckerQuotaInputSplit, NullWritable> {
+public class QuotaInputFormat extends InputFormat<QuotaInputSplit, NullWritable> {
 
-    Logger log = LoggerFactory.getLogger(FastStochasticKroneckerQuotaInputFormat.class);
+    Logger log = LoggerFactory.getLogger(QuotaInputFormat.class);
     
     @Override
     public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
@@ -53,7 +53,7 @@ public class FastStochasticKroneckerQuotaInputFormat extends InputFormat<FastSto
         List<InputSplit> splits = new ArrayList<InputSplit>();
         for (long i = 0; i < numberOfSplits; i++) {
             log.info("adding a split for: " + quota + " edges");
-            FastStochasticKroneckerQuotaInputSplit split = new FastStochasticKroneckerQuotaInputSplit(quota);
+            QuotaInputSplit split = new QuotaInputSplit(quota);
             splits.add(split);
         }
 
@@ -61,8 +61,8 @@ public class FastStochasticKroneckerQuotaInputFormat extends InputFormat<FastSto
     }
 
     @Override
-    public RecordReader<FastStochasticKroneckerQuotaInputSplit, NullWritable> createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
-        FastStochasticKroneckerQuotaRecordReader recordReader = new FastStochasticKroneckerQuotaRecordReader();
+    public RecordReader<QuotaInputSplit, NullWritable> createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
+        QuotaRecordReader recordReader = new QuotaRecordReader();
         recordReader.initialize(split, context);
         return recordReader;
     }

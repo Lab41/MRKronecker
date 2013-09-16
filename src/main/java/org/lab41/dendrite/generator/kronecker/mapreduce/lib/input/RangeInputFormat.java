@@ -23,9 +23,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author ndesai
  */
-public class FastStochasticKroneckerRangeInputFormat extends InputFormat<FastStochasticKroneckerRangeInputSplit, NullWritable> {
+public class RangeInputFormat extends InputFormat<RangeInputSplit, NullWritable> {
 
-    Logger log = LoggerFactory.getLogger(FastStochasticKroneckerRangeInputFormat.class);
+    Logger log = LoggerFactory.getLogger(RangeInputFormat.class);
     
     @Override
     public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
@@ -52,7 +52,7 @@ public class FastStochasticKroneckerRangeInputFormat extends InputFormat<FastSto
             if(endInterval > endSequence) endInterval = endSequence;
             
             log.info("adding a split for: vertices " + startInterval + " to " + endInterval);
-            FastStochasticKroneckerRangeInputSplit split = new FastStochasticKroneckerRangeInputSplit(startInterval,endInterval);
+            RangeInputSplit split = new RangeInputSplit(startInterval,endInterval);
             splits.add(split);
         }
 
@@ -60,8 +60,8 @@ public class FastStochasticKroneckerRangeInputFormat extends InputFormat<FastSto
     }
 
     @Override
-    public RecordReader<FastStochasticKroneckerRangeInputSplit, NullWritable> createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
-        FastStochasticKroneckerRangeRecordReader recordReader = new FastStochasticKroneckerRangeRecordReader();
+    public RecordReader<RangeInputSplit, NullWritable> createRecordReader(InputSplit split, TaskAttemptContext context) throws IOException, InterruptedException {
+        RangeRecordReader recordReader = new RangeRecordReader();
 
         recordReader.initialize(split, context);
         return recordReader;
