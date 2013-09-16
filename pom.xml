@@ -27,9 +27,13 @@
 
     <developers>
         <developer>
+            <name>Karthik Ramachandran</name>
+            <email>karthikr@lab41.org</email>
+        </developer>
+        <developer>
             <name>Nikhil Desai</name>
             <email>ndesai@iqt.org</email>
-      </developer>
+        </developer>
     </developers>
 
     <dependencies>
