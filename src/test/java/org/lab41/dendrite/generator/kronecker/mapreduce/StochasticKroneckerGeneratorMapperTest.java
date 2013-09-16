@@ -1,36 +1,29 @@
 package org.lab41.dendrite.generator.kronecker.mapreduce;
 
-import cern.jet.random.Binomial;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
-import org.apache.hadoop.mrunit.types.Pair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static junit.framework.Assert.*;
-
-
-import java.util.List;
+import static junit.framework.Assert.assertEquals;
 
 /**
  * @author kramachandran
  */
 public class StochasticKroneckerGeneratorMapperTest {
     Mapper mapper;
-    Logger logger = LoggerFactory.getLogger(StochasticKroneckerGeneratorMapper.class);
+    Logger logger = LoggerFactory.getLogger(StochasticKroneckerFaunusVertexGeneratorMapper.class);
 
 
     @Before
     public void setUp() throws Exception {
-        mapper = new StochasticKroneckerGeneratorMapper();
-
-
+        mapper = new StochasticKroneckerFaunusVertexGeneratorMapper();
 
 
     }
@@ -42,8 +35,8 @@ public class StochasticKroneckerGeneratorMapperTest {
 
     @Test
     public void testParseProbabilityMartix() throws Exception {
-        StochasticKroneckerGeneratorMapper stochasticKroneckerGeneratorMapper = new StochasticKroneckerGeneratorMapper();
-        double[][] probabilityMatrix = stochasticKroneckerGeneratorMapper.parseProbabilityMartix("1.1, 1.2, 2.1, 2.2");
+        StochasticKroneckerFaunusVertexGeneratorMapper stochasticKroneckerGeneratorMapper = new StochasticKroneckerFaunusVertexGeneratorMapper();
+        double[][] probabilityMatrix = InitiatorMatrixUtils.parseInitiatorMatrix("1.1, 1.2, 2.1, 2.2");
 
         assertEquals(probabilityMatrix[0][0], 1.1d);
         assertEquals(probabilityMatrix[0][1], 1.2d);
@@ -55,7 +48,7 @@ public class StochasticKroneckerGeneratorMapperTest {
 
     @Test
     public void testMap() throws Exception {
-        Configuration conf =  new Configuration();
+        Configuration conf = new Configuration();
         conf.set(Constants.N, "2");
         conf.set(Constants.PROBABLITY_MATRIX, " 0.25, 0.25, 0.25, 0.25");
 
@@ -80,17 +73,17 @@ public class StochasticKroneckerGeneratorMapperTest {
 
     @Test
     public void testGetProbabilityForIteration() throws Exception {
-        StochasticKroneckerGeneratorMapper stochasticKroneckerGeneratorMapper = new StochasticKroneckerGeneratorMapper();
-        double[][] probabilityMatrix = stochasticKroneckerGeneratorMapper.parseProbabilityMartix("1.1, 1.2, 2.1, 2.2");
+        StochasticKroneckerFaunusVertexGeneratorMapper stochasticKroneckerGeneratorMapper = new StochasticKroneckerFaunusVertexGeneratorMapper();
+        double[][] probabilityMatrix = InitiatorMatrixUtils.parseInitiatorMatrix("1.1, 1.2, 2.1, 2.2");
 
-        assertEquals(1.1d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 7 , probabilityMatrix));
-        assertEquals(1.1d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 6 , probabilityMatrix));
-        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 5 , probabilityMatrix));
-        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 4 , probabilityMatrix));
-        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 3 , probabilityMatrix));
-        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 2 , probabilityMatrix));
-        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 1 , probabilityMatrix));
-        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 0 , probabilityMatrix));
+        assertEquals(1.1d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 7, probabilityMatrix));
+        assertEquals(1.1d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 6, probabilityMatrix));
+        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 5, probabilityMatrix));
+        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 4, probabilityMatrix));
+        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 3, probabilityMatrix));
+        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 2, probabilityMatrix));
+        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 1, probabilityMatrix));
+        assertEquals(2.2d, stochasticKroneckerGeneratorMapper.getProbabilityForIteration(64, 64, 0, probabilityMatrix));
 
     }
 }
