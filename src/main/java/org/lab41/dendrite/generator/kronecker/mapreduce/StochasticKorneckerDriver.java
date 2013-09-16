@@ -1,6 +1,11 @@
 package org.lab41.dendrite.generator.kronecker.mapreduce;
 
+import com.thinkaurelius.faunus.FaunusVertex;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
@@ -9,60 +14,100 @@ import org.lab41.dendrite.generator.kronecker.mapreduce.lib.input.LongSequenceIn
 
 /**
  * This is a driver for a map-only job that generates a stochastic kronecker graph.
- *
+ * <p/>
  * The driver expects the following arguments:
- *      outputPath
- *      n - log_2(N) - where N is the number of nodes in the graph (the number of nodes in a graph generator using this
- *          method should always be a power of two.
- *      t_11, t_12, t_21, t_31 - the stochasic initator matrix. The sum of these variables should be 1.
- *
- *
- *
+ * <ul>
+ * <li>outputPath</li>
+ * <li>n - log_2(N) - where N is the number of nodes in the graph (the number of nodes in a graph generator using this</li>
+ * method should always be a power of two.
+ * <li>t_11, t_12, t_21, t_31 - the stochasic initator matrix. The sum of these variables should be 1.</li>
+ * </ul>
+ * <p/>
+ * <p/>
+ * <p/>
  * The arguments should be provided as follows :
- *
- *  StochasticKorneckerDriver outputPath n t_11 t_12 t_21 t_31
+ * <p/>
+ * StochasticKorneckerDriver outputPath n t_11 t_12 t_21 t_31
+ * <p/>
+ * This version of the driver uses the {@link LongSequenceInputFormat} as the input format, and the
+ * {@link FileOutputFormat} as the output format.
  *
  * @author kramachandran
  */
 public class StochasticKorneckerDriver extends Configured implements Tool {
-        private String outputPath;
-        private
-        private float[] initiator = new float[4];
-        private int n;
+    private Path outputPath;
+    private String initiator;
+    private int n;
 
-        public void parseArgs(String[] args)
+    public static void main(String[] args) throws Exception {
+        int exitCode = ToolRunner.run(new StochasticKorneckerDriver(), args);
+
+        System.exit(exitCode);
+    }
+
+    protected void parseArgs(String[] args) {
+        if (args.length != 6) {
+            System.out.print("Usage : StochasticKorneckerDriver outputPath n t_11 t_12 t_21 t_31");
+            System.exit(1);
+        }
+        else
         {
+            //output path
+            outputPath = new Path( args[0]);
+
+            //read n
+            n = Integer.parseInt(args[1]);
+
+            //read the initator matrix
+            String t_11 = args[2];
+            String t_12 = args[3];
+            String t_21 = args[4];
+            String t_22 = args[5];
+
+            initiator =  t_11 +", " + t_12 + ", "+ t_21 + ", " + t_22 ;
+
+
         }
 
-        @Override
-        public int run(String[] args) throws Exception {
-            parseArgs(args)
-            /** configure Job **/
-            Job job = new Job(getConf(), "DataIngest Example");
-            job.setJarByClass(StochasticKorneckerDriver.class);
+    }
+
+    @Override
+    public int run(String[] args) throws Exception {
+        parseArgs(args);
+
+        Configuration conf = getConf();
+
+        /** configure Job **/
+        Job job = new Job(getConf(), "DataIngest Example");
+        job.setJarByClass(StochasticKorneckerDriver.class);
+
+        /** Set the Mapper & Reducer**/
+        job.setMapperClass(StochasticKorneckerGeneratorMapper.class);
+        job.setReducerClass(EdgeListToFaunusAnnotatingReducer.class);
+
+        /** Configure Input Format to be our custom InputFormat **/
+        job.setInputFormatClass(LongSequenceInputFormat.class);
+        job.setOutputFormatClass(FileOutputFormat.class);
+        FileOutputFormat.setOutputPath(job, outputPath);
+
+        /** Configure Map Output **/
+        job.setMapOutputKeyClass(LongWritable.class);
+        job.setMapOutputValueClass(LongWritable.class);
+
+        /** Configure job (Reducer) output **/
+        job.setOutputKeyClass(NullWritable.class);
+        job.setOutputValueClass(FaunusVertex.class);
+
+        //Set the configuration
+        job.getConfiguration().set(Constants.PROBABLITY_MATRIX, initiator);
+        job.getConfiguration().set(Constants.N, Integer.toString(n));
 
 
-            LongSequenceInputFormat longSequenceInputFormat = new LongSequenceInputFormat()
-
-
-            FileOutputFormat.setOutputPath(job, mrOutput);
-
-            job.setMapperClass(StochasticKorneckerMapper.class);
-            job.setReducerClass(EdgeListToFaunusAnnotatingReducer.class);
-
-
-
-            if (job.waitForCompletion(true)) {
-                return 0;
-            } else {
-                return 1;
-            }
-        }
-
-        public static void main(String[] args) throws Exception {
-            int exitCode = ToolRunner.run(new StochasticKorneckerDriver(), args);
-
-            System.exit(exitCode);
+        if (job.waitForCompletion(true)) {
+            return 0;
+        } else {
+            return 1;
         }
     }
 }
+
