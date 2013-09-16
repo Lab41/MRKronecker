@@ -1,24 +1,21 @@
 #!/bin/sh
-#set -e
+set -x
 #cd `dirname $0`
 
-output=$1
-
-msg1="Usage: VertexGenerator.sh <vertex output directory> <number of iterations> <t_11> <t_12> <t_21> <t_22>"
-msg2="       Number of iterations should be less than 64."
-
-if [[ $# != 6 ]]; then
-    echo "$msg1"
-    echo "$msg2"
+if [[ $# != 7 ]]; then
+    echo "Usage: VertexGenerator.sh <vertex output directory> <number of annotations> <number of iterations> <t_11> <t_12> <t_21> <t_22>"
+    echo "       Number of iterations should be less than 64, number of annotations less than 21."
     exit 1
 fi
 
-if [[ "$1" == "" ]]; then
+output_dir=$1
+
+if [[ "$output_dir" == "" ]]; then
     echo no output specified 1>&2
     exit 1
 fi
 
-hadoop fs -rm -r -f "$output*" || :
+hadoop fs -rm -r -f "$output_dir*" || :
 
 if [[ "$DEBUG_ENABLED" -eq 1 ]]; then
 	HADOOP_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044"

@@ -2,15 +2,15 @@
 #set -e
 #cd `dirname $0`
 
-msg="Usage: GraphGenerator.sh <edge file> <vertex file> <graph output file>"
+msg="Usage: GraphGenerator.sh <number of annotations> <edge directory> <vertex directory> <graph output directory>"
 
-if [[ $# != 3 ]]; then
+if [[ $# != 4 ]]; then
     echo "$msg"
     exit 1
 fi
 
-output=$3
-hadoop fs -rm -r -f "$output*" || :
+output_dir=$4
+hadoop fs -rm -r -f "$output_dir*" || :
 
 if [[ "$DEBUG_ENABLED" -eq 1 ]]; then
 	HADOOP_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044"
