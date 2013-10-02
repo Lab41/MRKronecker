@@ -49,7 +49,7 @@ public abstract class BaseMapper<KEYIN, VALUEIN, KEYOUT, VALUEOUT> extends Mappe
         n = Integer.parseInt(nString);
         String strProbMatrix = configuration.get(Constants.PROBABILITY_MATRIX);
         probabilityMatrix = InitiatorMatrixUtils.parseInitiatorMatrix(strProbMatrix);
-        uniform = new Uniform(0, 1, 0);
+        uniform = new Uniform(0, 1, (int) (System.currentTimeMillis() % Integer.MAX_VALUE));
     }
 
 
