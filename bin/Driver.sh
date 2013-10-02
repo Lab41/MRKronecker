@@ -20,6 +20,7 @@ project_dir=$1
 edge_dir=$project_dir/edges
 vertex_dir=$project_dir/vertices
 output_dir=$project_dir/graph
+graphson_dir=$project_dir/graphson
 
 num_annotations=$2
 
@@ -28,3 +29,4 @@ shift 1 #$@ is now [<number of annotations> <number of iterations> <t_11> <t_12>
 ./EdgeGenerator.sh $edge_dir $@
 ./VertexGenerator.sh $vertex_dir $@
 ./GraphGenerator.sh $num_annotations $edge_dir $vertex_dir $output_dir
+./GraphSONGenerator.sh $output_dir $graphson_dir

@@ -30,9 +30,9 @@ g.setOutputLocation('$output_dir')
 g._.submit()
 EOF
 
-faunus_dir=$FAUNUS_HOME
-cd $faunus_dir
-./bin/gremlin.sh -e $faunus_script_file
+my_dir=`pwd -P`
+cd $FAUNUS_HOME
+./bin/gremlin.sh -e $my_dir/$faunus_script_file
 
 cd $my_dir
 rm $faunus_script_file
