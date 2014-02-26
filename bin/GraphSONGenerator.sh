@@ -1,23 +1,24 @@
 #!/bin/sh
-set -x
-#cd `dirname $0`
+
+set -x -e
 
 if [[ $# != 2 ]]; then
     echo "Usage: GraphSONGenerator.sh <graph SequenceFile input directory> <graph GraphSON output directory>"
     exit 1
 fi
 
-if [[ `dirname $0` != "." ]]; then
-    echo "cd to `dirname $0` to run this script."
+if [[ "$FAUNUS_HOME" -eq "" ]]; then
+    echo "set the FAUNUS_HOME environment variable to point at where faunus is installed"
     exit 1
 fi
 
+ROOT=$(cd $(dirname "$0")/..; pwd -P)
 input_dir=$1
 output_dir=$2
 
 #Write a script file to output.
-faunus_script_file="Transformation.groovy"
-rm $faunus_script_file 
+faunus_script_file=$ROOT/Transformation.groovy
+rm $faunus_script_file || true
 
 cat >>$faunus_script_file <<EOF
 g = new FaunusGraph()
@@ -30,9 +31,7 @@ g.setOutputLocation('$output_dir')
 g._.submit()
 EOF
 
-my_dir=`pwd -P`
-cd $FAUNUS_HOME
-./bin/gremlin.sh -e $my_dir/$faunus_script_file
-
-cd $my_dir
+pushd $FAUNUS_HOME
+./bin/gremlin.sh -e $faunus_script_file
+popd
 rm $faunus_script_file
